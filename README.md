@@ -1,44 +1,56 @@
 # ABSU Marketplace
 
-A student marketplace for Abia State University (ABSU), Nigeria. Students can register, browse and list products, become sellers, and manage a membership.
+A student marketplace for Abia State University (ABSU), Uturu, Nigeria. Students register, browse and search products, become sellers, list items with photos, place orders and manage a membership.
+
+**Membership:** the first 50 verified students are free for life; everyone after pays NGN 1,500 per month through Paystack.
 
 ## Status
 
-Repository initialised. No application code yet. Work follows the phased plan in [`docs/MASTER_BUILD_INSTRUCTIONS.md`](docs/MASTER_BUILD_INSTRUCTIONS.md).
+| Part | State |
+| --- | --- |
+| Frontend (all public, auth, student, seller and admin pages) | Built, type-checked, linted, builds |
+| Paystack flow (initialize, callback, webhook, idempotent processing) | Built and unit-tested; needs only `PAYSTACK_SECRET_KEY` |
+| Supabase backend (schema, RLS, triggers, functions, storage) | **Specified, not built yet.** See `docs/BACKEND_CONTRACT.md` and hand `docs/BACKEND_AGENT_PROMPT.md` to the backend agent |
 
-| Phase | Scope | Status |
-| --- | --- | --- |
-| 1 | Project foundation and design system | Not started |
-| 2 | Homepage, marketplace and product pages | Not started |
-| 3 | Authentication and user profiles | Not started |
-| 4 | Database schema, security and storage | Not started |
-| 5 | Membership allocation and Paystack payments | Not started |
-| 6 | Seller dashboard | Not started |
-| 7 | Admin dashboard | Not started |
-| 8 | Testing, security review and deployment | Not started |
+Until the backend exists the site runs with a visible "Backend not connected" banner and empty states. Nothing is mocked.
 
-## Planned stack
+## Stack
+Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (Auth, Postgres, Storage) · Paystack · Vercel
 
-- Next.js (App Router) with TypeScript
-- Tailwind CSS
-- Supabase (Auth, PostgreSQL, Storage)
-- Paystack for membership payments
-- Vercel for deployment
+## Run it
+```bash
+cp .env.example .env.local   # add Supabase values (and the Paystack secret key last)
+npm install
+npm run dev
+```
+Scripts: `npm run typecheck` · `npm run lint` · `npm test` · `npm run build`
 
-## Membership model
+## Structure
+```
+src/
+  app/
+    (site)/        public pages: home, marketplace, search, category, product, pricing, about, contact
+    (auth)/        login, register, verify-email, forgot/reset password + server actions
+    auth/callback  email-link landing route
+    dashboard/     student area: overview, profile, membership, orders, saved, notifications
+    seller/        seller application + (manage)/ products, orders, sales
+    admin/         users, seller applications, product moderation, categories, orders, payments, support inbox
+    api/paystack/  initialize, callback, webhook
+  components/      ui/ layout/ product/ membership/ dashboard/ auth/
+  lib/             supabase clients, auth helpers, data queries, paystack, validation, utils
+  config/site.ts   membership rules and constants (single source in the frontend)
+docs/              contract, backend prompt, paystack, security, deployment
+```
 
-- First 50 eligible registered users: free permanently.
-- After that: ₦1,500 per month via Paystack.
-- Free slots must be allocated atomically in the database, and payments verified server-side.
+## Membership rules (how they work)
+- Free spot is given by the database after **email verification**, in verification order, atomically (so two people can never take spot 50 together).
+- Free members are never charged; the server refuses to start a payment for them.
+- Paid access = 30 days per successful payment, extended from the current expiry when renewing early. Renewal is manual (no auto-debit in v1).
+- Access is granted only after the server confirms the payment with Paystack. Returning from checkout proves nothing.
+- Membership unlocks selling, ordering and seeing seller contacts. Browsing is free for everyone.
 
-## Setup
-
-Setup, deployment and security documentation will be added as each phase is completed.
-
-1. Copy `.env.example` to `.env.local` and fill in your own values.
-2. Never commit `.env.local` or any real secret.
-
-## Security notes
-
-- The Supabase service-role key and the Paystack secret key must only ever be used in server-side code.
-- Admin access is enforced by server-side role checks and Row Level Security, never by a frontend password.
+## Documentation
+- [Backend contract](docs/BACKEND_CONTRACT.md) : exact database interface
+- [Backend agent prompt](docs/BACKEND_AGENT_PROMPT.md) : hand this to the agent that builds Supabase
+- [Paystack flow](docs/PAYSTACK.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)
+- [Original build instructions](docs/MASTER_BUILD_INSTRUCTIONS.md)
