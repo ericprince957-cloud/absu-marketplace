@@ -49,6 +49,8 @@ src/
   config/site.ts       Frontend membership constants
   lib/                 Supabase, auth, validation and Paystack logic
 docs/                  Backend contract, security, payment and launch guides
+supabase/seed.sql       Idempotent category and app-setting reference seed
+supabase/tests/        Read-only backend contract smoke assertions
 ```
 
 ## Documentation
