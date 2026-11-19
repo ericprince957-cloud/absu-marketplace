@@ -4,8 +4,8 @@ import { siteConfig } from "@/config/site";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
-    <Link href="/" className={`inline-flex items-center gap-2.5 ${className}`} aria-label={`${siteConfig.name} home`}>
-      <span className="grid size-9 place-items-center rounded-xl bg-brand-700 text-white shadow-sm">
+    <Link href="/" className={`inline-flex shrink-0 items-center gap-2.5 ${className}`} aria-label={`${siteConfig.name} home`}>
+      <span className="grid size-10 place-items-center rounded-xl bg-brand-700 text-white shadow-sm">
         <ShoppingBag className="size-5" aria-hidden />
       </span>
       <span className="font-display text-lg font-bold tracking-tight text-stone-900">
