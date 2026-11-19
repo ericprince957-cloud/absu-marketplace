@@ -1,56 +1,65 @@
 # ABSU Marketplace
 
-A student marketplace for Abia State University (ABSU), Uturu, Nigeria. Students register, browse and search products, become sellers, list items with photos, place orders and manage a membership.
+A student marketplace for Abia State University (ABSU), Uturu, Nigeria. Students can register, browse and search products, apply to become sellers, list items with photos, place orders and manage membership.
 
-**Membership:** the first 50 verified students are free for life; everyone after pays NGN 1,500 per month through Paystack.
+**Membership:** the first 50 verified students receive lifetime free access. Other eligible students pay **NGN 1,500 for 30 days** through Paystack.
 
-## Status
+## Current project status
 
-| Part | State |
+| Area | Status |
 | --- | --- |
-| Frontend (all public, auth, student, seller and admin pages) | Built, type-checked, linted, builds |
-| Paystack flow (initialize, callback, webhook, idempotent processing) | Built and unit-tested; needs only `PAYSTACK_SECRET_KEY` |
-| Supabase backend (schema, RLS, triggers, functions, storage) | **Specified, not built yet.** See `docs/BACKEND_CONTRACT.md` and hand `docs/BACKEND_AGENT_PROMPT.md` to the backend agent |
+| Next.js frontend | Implemented in the repository; final production build and end-to-end launch checks still required |
+| Paystack integration | Server-side initialize, verify, callback, webhook and idempotent processing implemented; requires credentials and test transactions |
+| Supabase backend | Rebuilt and deployed to the configured Supabase project; backend smoke checks were run during deployment |
+| Repository migration source | Not yet committed as reproducible SQL migrations; see [Backend setup](docs/BACKEND_SETUP.md) |
+| Launch configuration | Requires owner setup and verification; see [Launch checklist](docs/LAUNCH_CHECKLIST.md) |
 
-Until the backend exists the site runs with a visible "Backend not connected" banner and empty states. Nothing is mocked.
+The live Supabase project is **not** a blank or unbuilt backend. Do not reset it or rerun destructive setup SQL. The setup guide distinguishes the existing live deployment from the repository files still needed for reproducible fresh environments.
 
 ## Stack
-Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (Auth, Postgres, Storage) · Paystack · Vercel
 
-## Run it
+Next.js App Router · TypeScript · Tailwind CSS · Supabase Auth/Postgres/Storage · Paystack · Vercel
+
+## Run locally
+
 ```bash
-cp .env.example .env.local   # add Supabase values (and the Paystack secret key last)
+cp .env.example .env.local
 npm install
 npm run dev
 ```
+
 Scripts: `npm run typecheck` · `npm run lint` · `npm test` · `npm run build`
 
-## Structure
+## Membership rules
+
+- Free lifetime slots are assigned by the database after email verification, in verification order.
+- The allocation is atomic and capped at 50.
+- Free members are never charged.
+- Paid membership lasts 30 days per successful payment. Early renewals extend from the existing expiry.
+- Membership unlocks selling, placing orders and viewing seller contact details. Browsing is public.
+- Item purchases are arranged directly between buyer and seller; the platform does not process item-sale payments.
+- Returning from Paystack checkout does not grant access. The server verifies the transaction with Paystack first.
+
+## Project structure
+
 ```
 src/
-  app/
-    (site)/        public pages: home, marketplace, search, category, product, pricing, about, contact
-    (auth)/        login, register, verify-email, forgot/reset password + server actions
-    auth/callback  email-link landing route
-    dashboard/     student area: overview, profile, membership, orders, saved, notifications
-    seller/        seller application + (manage)/ products, orders, sales
-    admin/         users, seller applications, product moderation, categories, orders, payments, support inbox
-    api/paystack/  initialize, callback, webhook
-  components/      ui/ layout/ product/ membership/ dashboard/ auth/
-  lib/             supabase clients, auth helpers, data queries, paystack, validation, utils
-  config/site.ts   membership rules and constants (single source in the frontend)
-docs/              contract, backend prompt, paystack, security, deployment
+  app/                 Public pages, auth, dashboards and API routes
+  components/          UI and feature components
+  config/site.ts       Frontend membership constants
+  lib/                 Supabase, auth, validation and Paystack logic
+docs/                  Backend contract, security, payment and launch guides
 ```
 
-## Membership rules (how they work)
-- Free spot is given by the database after **email verification**, in verification order, atomically (so two people can never take spot 50 together).
-- Free members are never charged; the server refuses to start a payment for them.
-- Paid access = 30 days per successful payment, extended from the current expiry when renewing early. Renewal is manual (no auto-debit in v1).
-- Access is granted only after the server confirms the payment with Paystack. Returning from checkout proves nothing.
-- Membership unlocks selling, ordering and seeing seller contacts. Browsing is free for everyone.
-
 ## Documentation
-- [Backend contract](docs/BACKEND_CONTRACT.md) : exact database interface
-- [Backend agent prompt](docs/BACKEND_AGENT_PROMPT.md) : hand this to the agent that builds Supabase
-- [Paystack flow](docs/PAYSTACK.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)
-- [Original build instructions](docs/MASTER_BUILD_INSTRUCTIONS.md)
+
+- [Backend contract](docs/BACKEND_CONTRACT.md)
+- [Backend setup and live deployment notes](docs/BACKEND_SETUP.md)
+- [Paystack integration and testing](docs/PAYSTACK.md)
+- [Security notes](docs/SECURITY.md)
+- [Deployment guide](docs/DEPLOYMENT.md)
+- [Launch checklist](docs/LAUNCH_CHECKLIST.md)
+
+## Important
+
+Never commit `.env.local`, Supabase service-role credentials, or Paystack secret keys. The only Paystack credential this implementation requires is the server-side `PAYSTACK_SECRET_KEY`; it must never be exposed as a `NEXT_PUBLIC_*` variable.
