@@ -50,6 +50,8 @@ The deployed smoke checks confirmed the 15 tables, RLS coverage, seven active ca
 
 The SQL migration source files were not committed to this GitHub repository during the live rebuild. The migration identifiers above are the recorded live history, **not SQL source files**. Do not create pretend migrations from memory and claim they are byte-for-byte identical to production.
 
+The repository now includes an idempotent reference seed at `supabase/seed.sql` and a read-only assertion script at `supabase/tests/backend_contract_smoke.sql`. These files are useful after the reviewed schema exists, but they do not replace the missing schema/function/policy migrations. The smoke script has been committed but has not been executed against the live database in this GitHub-only work.
+
 Before using this repository to provision a brand-new Supabase project:
 
 1. Have an operator with access to the live Supabase project retrieve the actual migration SQL or reconstruct it from the live schema and function definitions.
