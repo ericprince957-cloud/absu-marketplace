@@ -33,6 +33,7 @@
 
 html.dark body { background: #0d1428; color: #edf1fb; }
 html.dark .bg-white { background-color: #151f38; }
+html.dark .bg-white\\/90 { background-color: rgb(21 31 56 / 0.92); }
 html.dark .bg-stone-50 { background-color: #0d1428; }
 html.dark .bg-stone-100 { background-color: #202b46; }
 html.dark .bg-brand-50 { background-color: #1a2748; }
