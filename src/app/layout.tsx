@@ -2,11 +2,17 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { VectorCodesCredit } from "@/components/layout/vector-codes-credit";
+import { CookieConsent } from "@/components/layout/cookie-consent";
+import { PwaRegister } from "@/components/layout/pwa-register";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: { default: `${siteConfig.name} | Buy and sell at ABSU`, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
+  manifest: "/manifest.webmanifest",
+  applicationName: siteConfig.name,
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.shortName },
+  icons: { icon: "/icons/icon.svg", apple: "/icons/icon.svg" },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,
@@ -34,6 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         {children}
         <VectorCodesCredit />
+        <CookieConsent />
+        <PwaRegister />
       </body>
     </html>
   );
