@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: { default: `${siteConfig.name} | Buy and sell at ABSU`, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
-  alternates: { canonical: "/" },
   manifest: "/manifest.webmanifest",
   applicationName: siteConfig.name,
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.shortName },
@@ -22,7 +21,6 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    url: siteUrl,
     type: "website",
     locale: "en_NG",
   },
@@ -32,6 +30,11 @@ export const metadata: Metadata = {
     description: siteConfig.description,
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const pathname = (await headers()).get("x-pathname") ?? "/";
+  return { alternates: { canonical: pathname } };
+}
 
 export const viewport: Viewport = {
   themeColor: "#090909",
