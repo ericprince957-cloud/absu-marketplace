@@ -12,7 +12,7 @@ export const siteConfig = {
  * The database enforces the same rules; the browser never decides eligibility.
  */
 export const membership = {
-  /** The first N verified users get lifetime free access. */
+  /** The first N approved sellers get lifetime-free seller access. Buyers never use these slots. */
   freeSlotLimit: 50,
   /** Monthly price in naira (display) and kobo (what Paystack charges). */
   priceNaira: 1500,
