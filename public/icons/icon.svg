@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#090909"/>
+  <rect x="20" y="20" width="472" height="472" rx="96" fill="none" stroke="#D4AF37" stroke-width="12"/>
+  <path d="M256 92 112 176v160l144 84 144-84V176L256 92Zm0 48 92 54-92 54-92-54 92-54Zm-104 88 80 47v92l-80-47v-92Zm112 139v-92l80-47v92l-80 47Z" fill="#D4AF37"/>
+  <text x="256" y="450" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#fff">ABSU</text>
+</svg>
