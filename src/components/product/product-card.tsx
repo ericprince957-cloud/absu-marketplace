@@ -17,7 +17,7 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
   return (
     <article className="market-product-card group relative min-w-0 overflow-hidden rounded-[1.35rem] bg-white transition duration-300">
       <div className="relative">
-        <Link href={\`/product/\${product.id}\`} aria-label={\`View \${product.title}\`} className="block">
+        <Link href={`/product/${product.id}`} aria-label={`View ${product.title}`} className="block">
           <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">
             {cover ? (
               <Image
@@ -47,13 +47,13 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
           <p className="font-display text-lg font-extrabold tracking-tight text-stone-950 sm:text-xl">{formatNaira(product.price)}</p>
           <Badge>{conditionLabel(product.condition)}</Badge>
         </div>
-        <Link href={\`/product/\${product.id}\`} className="block">
+        <Link href={`/product/${product.id}`} className="block">
           <h3 className="line-clamp-2 min-h-10 text-[13px] font-semibold leading-snug text-stone-800 transition group-hover:text-brand-700 sm:text-sm">{product.title}</h3>
         </Link>
         <div className="flex min-h-5 items-center gap-1 text-[11px] text-stone-500">
           {product.location ? <><MapPin className="size-3 shrink-0" aria-hidden /><span className="truncate">{product.location}</span></> : <span>ABSU · Uturu</span>}
         </div>
-        <Link href={\`/product/\${product.id}\`} className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-stone-950 px-3 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline-offset-2">
+        <Link href={`/product/${product.id}`} className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-stone-950 px-3 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline-offset-2">
           View item <ArrowUpRight className="size-3.5" aria-hidden />
         </Link>
       </div>

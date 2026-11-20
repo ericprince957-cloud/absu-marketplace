@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             {product.categories ? (
               <>
                 {" / "}
-                <Link href={\`/category/\${product.categories.slug}\`} className="hover:text-brand-700">{product.categories.name}</Link>
+                <Link href={`/category/${product.categories.slug}`} className="hover:text-brand-700">{product.categories.name}</Link>
               </>
             ) : null}
           </nav>
@@ -70,8 +70,8 @@ export default async function ProductPage({ params }: { params: Params }) {
 
         <div className="space-y-5 lg:sticky lg:top-24 lg:self-start">
           {product.status !== "approved" ? (
-            <Alert tone="warning" title={\`This listing is \${product.status}\`}>
-              Only you and administrators can see it. {product.moderation_note ? \`Moderator note: \${product.moderation_note}\` : ""}
+            <Alert tone="warning" title={`This listing is ${product.status}`}>
+              Only you and administrators can see it. {product.moderation_note ? `Moderator note: ${product.moderation_note}` : ""}
             </Alert>
           ) : null}
 
@@ -87,7 +87,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <Badge tone="green">{conditionLabel(product.condition)}</Badge>
               <Badge tone={product.quantity > 0 ? "neutral" : "red"}>
-                {product.quantity > 0 ? \`\${product.quantity} in stock\` : "Sold out"}
+                {product.quantity > 0 ? `${product.quantity} in stock` : "Sold out"}
               </Badge>
               {product.location ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-xs font-medium text-stone-600">
@@ -107,20 +107,20 @@ export default async function ProductPage({ params }: { params: Params }) {
                 <p className="truncate font-bold text-stone-950">{seller?.display_name ?? "ABSU student seller"}</p>
                 <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-stone-500">
                   <ShieldCheck className="size-3.5 text-emerald-600" aria-hidden />
-                  Marketplace seller{seller ? \` · joined \${formatDate(seller.created_at)}\` : ""}
+                  Marketplace seller{seller ? ` · joined ${formatDate(seller.created_at)}` : ""}
                 </p>
               </div>
-              {seller ? <Link href={\`/store/\${seller.id}\`} aria-label="View seller storefront" className="grid size-10 shrink-0 place-items-center rounded-xl bg-stone-100 text-stone-700 transition hover:bg-stone-200"><ArrowUpRight className="size-4" /></Link> : null}
+              {seller ? <Link href={`/store/${seller.id}`} aria-label="View seller storefront" className="grid size-10 shrink-0 place-items-center rounded-xl bg-stone-100 text-stone-700 transition hover:bg-stone-200"><ArrowUpRight className="size-4" /></Link> : null}
             </div>
             {seller?.bio ? <p className="text-sm leading-6 text-stone-600">{seller.bio}</p> : null}
-            {seller ? <Link href={\`/store/\${seller.id}\`} className="inline-flex min-h-10 items-center gap-2 text-xs font-bold text-stone-800 hover:text-brand-700"><Store className="size-4" /> Visit seller storefront <ArrowUpRight className="size-3.5" /></Link> : null}
+            {seller ? <Link href={`/store/${seller.id}`} className="inline-flex min-h-10 items-center gap-2 text-xs font-bold text-stone-800 hover:text-brand-700"><Store className="size-4" /> Visit seller storefront <ArrowUpRight className="size-3.5" /></Link> : null}
           </Card>
 
           <Card className="space-y-4 p-4 sm:p-5">
             {isOwner ? (
               <>
                 <p className="text-sm text-stone-700">This is your listing.</p>
-                <LinkButton href={\`/seller/products/\${product.id}/edit\`} variant="outline" className="w-full">Edit listing</LinkButton>
+                <LinkButton href={`/seller/products/${product.id}/edit`} variant="outline" className="w-full">Edit listing</LinkButton>
               </>
             ) : !isLive ? (
               <p className="text-sm text-stone-600">This product is not available to order right now.</p>
@@ -129,7 +129,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 <h2 className="font-semibold text-stone-950">Interested in this item?</h2>
                 <p className="text-sm leading-6 text-stone-600">You can browse this listing without an account. Sign in to contact the seller or place an order.</p>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <LinkButton href={\`/login?next=\${encodeURIComponent(\`/product/\${product.id}\`)}\`}>Log in</LinkButton>
+                  <LinkButton href={`/login?next=${encodeURIComponent(`/product/${product.id}`)}`}>Log in</LinkButton>
                   <LinkButton href="/register" variant="outline">Create account</LinkButton>
                 </div>
               </>

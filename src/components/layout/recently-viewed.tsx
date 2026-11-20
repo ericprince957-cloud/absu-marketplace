@@ -52,7 +52,7 @@ export function RecentlyViewed({
       <ul className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0">
         {items.map((item) => (
           <li key={item.id} className="w-36 shrink-0 snap-start sm:w-44">
-            <Link href={\`/product/\${item.id}\`} className="group block overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-0.5 hover:shadow-md">
+            <Link href={`/product/${item.id}`} className="group block overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-0.5 hover:shadow-md">
               <div className="relative aspect-[4/3] bg-stone-100">
                 {item.image ? <Image src={item.image} alt={item.title} fill unoptimized sizes="176px" className="object-cover transition group-hover:scale-105" /> : <div className="grid h-full place-items-center text-stone-300"><ImageOff className="size-6" /></div>}
               </div>

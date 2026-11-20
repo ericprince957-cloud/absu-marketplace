@@ -84,7 +84,7 @@ export default async function HomePage() {
               const Icon = categoryIcons[i % categoryIcons.length];
               return (
                 <li key={category.id} className="w-[7.4rem] shrink-0 snap-start sm:w-auto">
-                  <Link href={\`/category/\${category.slug}\`} className="group flex h-full min-h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-stone-200 bg-white px-3 py-4 text-center transition hover:-translate-y-1 hover:border-[#d4af37] hover:shadow-lg">
+                  <Link href={`/category/${category.slug}`} className="group flex h-full min-h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-stone-200 bg-white px-3 py-4 text-center transition hover:-translate-y-1 hover:border-[#d4af37] hover:shadow-lg">
                     <span className="grid size-14 place-items-center rounded-[1.2rem] bg-stone-100 text-stone-800 transition group-hover:bg-[#171717] group-hover:text-[#e7c95f]">
                       <Icon className="size-6" aria-hidden />
                     </span>
@@ -105,7 +105,7 @@ export default async function HomePage() {
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-600">For student sellers</p>
               <h2 className="mt-0.5 text-lg font-extrabold sm:text-xl">
-                {slots !== null && slots > 0 ? \`\${slots} free lifetime spots remaining\` : "Ready to put your products on campus?"}
+                {slots !== null && slots > 0 ? `${slots} free lifetime spots remaining` : "Ready to put your products on campus?"}
               </h2>
               <p className="mt-1 text-xs leading-5 text-stone-600 sm:text-sm">
                 First {membership.freeSlotLimit} verified students get lifetime free membership. Then {formatNaira(membership.priceNaira)} per month. Browsing stays free.

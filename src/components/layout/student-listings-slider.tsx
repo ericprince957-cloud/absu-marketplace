@@ -33,7 +33,7 @@ export async function StudentListingsSlider() {
             return (
               <li key={product.id} className="w-[72%] max-w-[16rem] shrink-0 snap-start sm:w-[calc(33.333%-0.75rem)] lg:w-[calc(25%-0.75rem)]">
                 <article className="group h-full overflow-hidden rounded-[1.35rem] border border-stone-200 bg-white transition hover:-translate-y-1 hover:border-[#D4AF37] hover:shadow-xl">
-                  <Link href={\`/product/\${product.id}\`} className="block">
+                  <Link href={`/product/${product.id}`} className="block">
                     <div className="relative aspect-[5/4] overflow-hidden bg-stone-100">
                       {cover ? <Image src={cover} alt={product.title} fill sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 72vw" className="object-cover transition duration-500 group-hover:scale-105" /> : <div className="grid h-full place-items-center text-stone-300"><ImageOff className="size-8" /></div>}
                       <div className="absolute right-2 top-2 z-10"><SaveButton productId={product.id} saved={saved.has(product.id)} signedIn={Boolean(user)} /></div>
@@ -47,7 +47,7 @@ export async function StudentListingsSlider() {
                   </Link>
                   <div className="flex items-center justify-between border-t border-stone-100 px-3.5 py-2.5 text-xs text-stone-500">
                     <span>Listed by an ABSU seller</span>
-                    <Link href={\`/product/\${product.id}\`} className="font-bold text-stone-900 underline-offset-4 hover:underline">View item</Link>
+                    <Link href={`/product/${product.id}`} className="font-bold text-stone-900 underline-offset-4 hover:underline">View item</Link>
                   </div>
                 </article>
               </li>

@@ -10,7 +10,7 @@ type Params = Promise<{ id: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const seller = await getSellerPublic((await params).id);
-  return { title: seller?.display_name ? \`\${seller.display_name} Storefront\` : "Seller storefront" };
+  return { title: seller?.display_name ? `${seller.display_name} Storefront` : "Seller storefront" };
 }
 
 export default async function StorefrontPage({ params }: { params: Params }) {
