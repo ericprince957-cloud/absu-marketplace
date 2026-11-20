@@ -31,7 +31,7 @@ export async function toggleSaved(productId: string): Promise<{ ok: boolean }> {
   return { ok: true };
 }
 
-/** Place an order request. The database function checks membership, stock and ownership. */
+/** Place a free buyer order request. The database checks stock, availability and ownership. */
 export async function placeOrder(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const user = await getUser();
   if (!user) return fail("Please log in to place an order.");
