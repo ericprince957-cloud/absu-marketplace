@@ -1,6 +1,6 @@
 # Paystack payment flow
 
-Membership is NGN 1,500 per 30 days. Free lifetime members never see a pay button and are rejected by the server if they try.
+Seller access is NGN 1,500 per 30 days. Free lifetime members never see a pay button and are rejected by the server if they try.
 
 ## The only thing you must add
 
@@ -33,12 +33,12 @@ Browser                    Next.js server                    Paystack           
    |--- pays on checkout.paystack.com ------------------------------------------------>|
    |<-- redirect /api/paystack/callback?reference=... --------------------------------- |
    |                             |--- GET /transaction/verify/:reference -------------->|  (never trust the redirect)
-   |                             |------rpc apply_membership_payment (service role)---->|
-   |<-- redirect /dashboard/membership?payment=success                                   |
+   |                             |------rpc apply_seller access_payment (service role)---->|
+   |<-- redirect /dashboard/seller access?payment=success                                   |
    |                             |<-- POST /api/paystack/webhook (charge.success) ------|  (backup, same code path)
 ```
 
-Both the callback and the webhook call `processMembershipPayment()` in `src/lib/paystack/process.ts`, so there is one code path to audit.
+Both the callback and the webhook call `processSeller accessPayment()` in `src/lib/paystack/process.ts`, so there is one code path to audit.
 
 ## Safety properties (each is covered by tests in `src/lib/paystack/*.test.ts`)
 
@@ -47,7 +47,7 @@ Both the callback and the webhook call `processMembershipPayment()` in `src/lib/
 | User edits the price in the browser | The browser never sends a price. The server sets 150000 kobo and the database function re-checks it. |
 | User "returns" from checkout without paying | The callback grants nothing by itself. It asks Paystack's server for the real status. |
 | Fake webhook | HMAC-SHA512 of the **raw body** with the secret key, constant-time compared. Bad or missing signature = 401, nothing processed. |
-| Same payment processed twice (callback + webhook, or retries) | `apply_membership_payment` is idempotent per `reference` (row lock + `status = success` check). Second call returns `duplicate`. |
+| Same payment processed twice (callback + webhook, or retries) | `apply_seller access_payment` is idempotent per `reference` (row lock + `status = success` check). Second call returns `duplicate`. |
 | Wrong amount or currency but "success" | Rejected, recorded as failed with a review note, access not granted. |
 | Someone else's reference | Reference must match `ABSU-<uuid>`; the database matches the reference to the user who created it and checks `metadata.user_id`. |
 | Paystack or database down | Callback shows "confirming"; webhook returns 500 so Paystack retries. |
@@ -65,7 +65,7 @@ v1 uses **manual monthly renewal**: each payment adds 30 days; a member can pay 
 ## Testing before going live
 
 1. Use the **test** key (`sk_test_...`). Use Paystack's test cards (see Paystack docs "Test payments").
-2. Register a fresh account after all 50 free slots are used (or use an account that has no free slot), open `/dashboard/membership`, press Pay, complete checkout. You should land on `?payment=success` and see the active membership and a payment row.
+2. Register a fresh account after all 50 free slots are used (or use an account that has no free slot), open `/dashboard/seller access`, press Pay, complete checkout. You should land on `?payment=success` and see the active seller access and a payment row.
 3. Use Paystack's dashboard "Resend webhook" on that transaction and confirm nothing changes (idempotent).
 4. Start checkout and close it; the payment stays `pending`/`abandoned`, no access granted.
 5. Only then switch to the **live** key and update the webhook if the URL differs.
