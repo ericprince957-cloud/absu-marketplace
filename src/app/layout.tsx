@@ -4,6 +4,7 @@ import { siteConfig } from "@/config/site";
 import { VectorCodesCredit } from "@/components/layout/vector-codes-credit";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import { PwaRegister } from "@/components/layout/pwa-register";
+import { PwaInstallPrompt } from "@/components/layout/pwa-install-prompt";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <VectorCodesCredit />
         <CookieConsent />
         <PwaRegister />
+        <PwaInstallPrompt />
       </body>
     </html>
   );
