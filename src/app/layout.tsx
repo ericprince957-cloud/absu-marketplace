@@ -9,31 +9,30 @@ import { PwaInstallPrompt } from "@/components/layout/pwa-install-prompt";
 
 const siteUrl = new URL(siteConfig.url).origin;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: { default: `${siteConfig.name} | Buy and sell at ABSU`, template: `%s | ${siteConfig.name}` },
-  description: siteConfig.description,
-  manifest: "/manifest.webmanifest",
-  applicationName: siteConfig.name,
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.shortName },
-  icons: { icon: "/icons/icon.svg", apple: "/icons/icon.svg" },
-  openGraph: {
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-    type: "website",
-    locale: "en_NG",
-  },
-  twitter: {
-    card: "summary",
-    title: siteConfig.name,
-    description: siteConfig.description,
-  },
-};
-
 export async function generateMetadata(): Promise<Metadata> {
   const pathname = (await headers()).get("x-pathname") ?? "/";
-  return { alternates: { canonical: pathname } };
+  return {
+    metadataBase: new URL(siteConfig.url),
+    title: { default: `${siteConfig.name} | Buy and sell at ABSU`, template: `%s | ${siteConfig.name}` },
+    description: siteConfig.description,
+    alternates: { canonical: pathname },
+    manifest: "/manifest.webmanifest",
+    applicationName: siteConfig.name,
+    appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.shortName },
+    icons: { icon: "/icons/icon.svg", apple: "/icons/icon.svg" },
+    openGraph: {
+      title: siteConfig.name,
+      description: siteConfig.description,
+      siteName: siteConfig.name,
+      type: "website",
+      locale: "en_NG",
+    },
+    twitter: {
+      card: "summary",
+      title: siteConfig.name,
+      description: siteConfig.description,
+    },
+  };
 }
 
 export const viewport: Viewport = {
