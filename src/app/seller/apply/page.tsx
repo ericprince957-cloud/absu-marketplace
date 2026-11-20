@@ -44,7 +44,7 @@ export default async function ApplyPage() {
             </Alert>
           ) : null}
           <Card>
-            <SellerApplicationForm defaultPhone={profile?.whatsapp ?? profile?.phone} />
+            <SellerApplicationForm defaultPhone={profile?.whatsapp ?? profile?.phone} defaultFullName={profile?.full_name} />
           </Card>
         </div>
       )}
