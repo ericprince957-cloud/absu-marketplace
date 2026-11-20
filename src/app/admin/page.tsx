@@ -38,10 +38,10 @@ export default async function AdminOverviewPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-bold">Membership</h2>
+            <h2 className="mb-3 text-lg font-bold">Seller access revenue</h2>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-              <Stat label="Free lifetime" value={s.free_members} />
-              <Stat label="Paid members" value={s.paid_members} />
+              <Stat label="Lifetime-free sellers" value={s.free_members} />
+              <Stat label="Paid sellers" value={s.paid_members} />
               <Stat label="Membership revenue" value={formatNaira(koboToNaira(s.revenue_kobo))} />
             </div>
           </section>
