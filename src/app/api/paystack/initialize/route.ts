@@ -25,7 +25,7 @@ function sameOrigin(request: NextRequest): boolean {
 }
 
 /**
- * Starts a membership payment.
+ * Starts a seller-access payment.
  * The amount is decided here on the server. The browser sends nothing about price.
  */
 export async function POST(request: NextRequest) {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     p_amount_kobo: membership.priceKobo,
   });
   if (pendingError) {
-    if (pendingError.message.includes("already_free")) return json({ error: "You are a free lifetime member." }, 409);
+    if (pendingError.message.includes("already_free")) return json({ error: "You have lifetime-free seller access." }, 409);
     console.error("[paystack] create_pending_payment failed:", pendingError.message);
     return json({ error: "We could not start your payment. Please try again." }, 500);
   }
