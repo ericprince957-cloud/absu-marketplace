@@ -7,7 +7,7 @@ import { CookieConsent } from "@/components/layout/cookie-consent";
 import { PwaRegister } from "@/components/layout/pwa-register";
 import { PwaInstallPrompt } from "@/components/layout/pwa-install-prompt";
 
-const siteUrl = siteConfig.url.replace(/\\/$/, "");
+const siteUrl = new URL(siteConfig.url).origin;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
