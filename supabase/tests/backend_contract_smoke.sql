@@ -18,6 +18,7 @@ declare
     'order_items',
     'saved_products',
     'seller_applications',
+    'seller_reports',
     'notifications',
     'support_messages'
   ];
@@ -106,6 +107,23 @@ begin
   end if;
   if not has_function_privilege('anon', 'public.get_free_slots_remaining()', 'EXECUTE') then
     raise exception 'anon must be able to execute get_free_slots_remaining';
+  end if;
+  if not has_function_privilege('anon', 'public.get_seller_contact(uuid)', 'EXECUTE') then
+    raise exception 'anon buyers must be able to contact sellers without signing in';
+  end if;
+  if has_function_privilege('anon', 'public.claim_free_slot(uuid)', 'EXECUTE')
+     or has_function_privilege('authenticated', 'public.claim_free_slot(uuid)', 'EXECUTE') then
+    raise exception 'only seller approval may allocate free seller slots';
+  end if;
+  if position('claim_free_slot' in pg_get_functiondef('public.handle_auth_user_created()'::regprocedure)) > 0
+     or position('claim_free_slot' in pg_get_functiondef('public.handle_auth_user_updated()'::regprocedure)) > 0 then
+    raise exception 'signup and email verification must never allocate seller slots';
+  end if;
+  if position('claim_free_slot' in pg_get_functiondef('public.review_seller_application(uuid,boolean,text)'::regprocedure)) = 0 then
+    raise exception 'seller approval must allocate lifetime-free seller slots';
+  end if;
+  if position('membership_required' in pg_get_functiondef('public.place_order(uuid,integer,text)'::regprocedure)) > 0 then
+    raise exception 'buyer order requests must not require seller membership';
   end if;
 
   raise notice 'ABSU Marketplace backend contract smoke test passed';
