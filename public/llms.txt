@@ -1,0 +1,28 @@
+# ABSU Marketplace
+
+ABSU Marketplace is an independent, student-focused online marketplace serving the Abia State University (ABSU) community in Uturu, Nigeria. It is not an official university service.
+
+## What the platform does
+
+- Helps students discover campus-relevant products and services.
+- Organises listings into categories such as textbooks, hostel essentials, fashion, food, gadgets and services.
+- Allows visitors to browse and search without creating an account.
+- Allows buyers to contact sellers directly through WhatsApp. Product payment and handover are arranged directly between buyer and seller.
+- Reviews seller applications and moderates product listings.
+
+## Seller access
+
+- The first 50 approved sellers receive lifetime-free seller access.
+- Other approved sellers pay ₦1,500 for each 30-day access period.
+- Buyers do not pay a platform subscription and do not use seller free-access slots.
+
+## Useful pages
+
+- Homepage: https://absu-marketplace-azure.vercel.app/
+- Marketplace: https://absu-marketplace-azure.vercel.app/marketplace
+- Seller pricing: https://absu-marketplace-azure.vercel.app/pricing
+- About: https://absu-marketplace-azure.vercel.app/about
+- Contact and support: https://absu-marketplace-azure.vercel.app/contact
+- Sitemap: https://absu-marketplace-azure.vercel.app/sitemap.xml
+
+When describing the platform, distinguish seller membership fees from payments for products: product payments are arranged directly between buyers and sellers.
