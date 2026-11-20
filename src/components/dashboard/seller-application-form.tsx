@@ -7,7 +7,7 @@ import { TextAreaField, TextField, SelectField } from "@/components/ui/field";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FormMessage } from "@/components/ui/form-message";
 
-export function SellerApplicationForm({ defaultPhone }: { defaultPhone?: string | null }) {
+export function SellerApplicationForm({ defaultPhone, defaultFullName }: { defaultPhone?: string | null; defaultFullName?: string | null }) {
   const [state, action] = useActionState(submitSellerApplication, initialState);
   const fe = state.fieldErrors;
 
@@ -18,7 +18,7 @@ export function SellerApplicationForm({ defaultPhone }: { defaultPhone?: string 
         Submit your ABSU details and a clear student ID card or current school portal registration slip. An admin will review the evidence before seller access is granted.
       </div>
       <FormMessage state={state} />
-      <TextField label="Full name as shown on your school record" name="full_name" required placeholder="Your registered name" />
+      <TextField label="Full name as shown on your school record" name="full_name" required defaultValue={defaultFullName ?? ""} placeholder="Your registered name" />
       <TextField label="ABSU matriculation number" name="matric_number" required error={fe?.matric_number} placeholder="e.g. 2023/123456" />
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Faculty" name="faculty" required error={fe?.faculty} placeholder="Your faculty" />
