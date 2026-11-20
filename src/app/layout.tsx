@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { VectorCodesCredit } from "@/components/layout/vector-codes-credit";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2c397f",
+  themeColor: "#090909",
   width: "device-width",
   initialScale: 1,
 };
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <VectorCodesCredit />
       </body>
     </html>
   );
