@@ -48,7 +48,7 @@ export async function placeOrder(_prev: ActionState, formData: FormData): Promis
 
   if (error) {
     const m = error.message;
-    if (m.includes("membership_required")) return fail("You need an active membership to place orders.");
+    if (m.includes("account_suspended")) return fail("This account is currently restricted.");
     if (m.includes("own_product")) return fail("You cannot order your own product.");
     if (m.includes("out_of_stock")) return fail("Not enough stock available for that quantity.");
     if (m.includes("not_available")) return fail("This product is no longer available.");
