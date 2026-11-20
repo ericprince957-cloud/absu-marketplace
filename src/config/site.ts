@@ -3,7 +3,7 @@ export const siteConfig = {
   shortName: "ABSU Market",
   description:
     "The student marketplace for Abia State University, Uturu. Discover textbooks, hostel essentials, gadgets, fashion, food and services from student sellers.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://absu-marketplace-azure.vercel.app",
+  url: "https://absu-marketplace-azure.vercel.app",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "",
 } as const;
 
