@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth";
 import { listProducts, getSavedProductIds } from "@/lib/data/products";
 import { formatNaira, publicImageUrl } from "@/lib/utils";
 import Image from "next/image";
+import { SaveButton } from "@/components/product/save-button";
 
 export async function StudentListingsSlider() {
   const [{ products }, user] = await Promise.all([listProducts({ pageSize: 24 }), getUser()]);
@@ -36,6 +37,7 @@ export async function StudentListingsSlider() {
                   <Link href={`/product/${product.id}`} className="block">
                     <div className="relative aspect-[5/4] bg-stone-100">
                       {cover ? <Image src={cover} alt={product.title} fill sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 72vw" className="object-cover transition duration-300 group-hover:scale-[1.03]" /> : <div className="grid h-full place-items-center text-stone-300"><ImageOff className="size-8" /></div>}
+                      <div className="absolute right-2 top-2 z-10"><SaveButton productId={product.id} saved={saved.has(product.id)} signedIn={Boolean(user)} /></div>
                       <span className="absolute left-2 top-2 rounded-full border border-white/20 bg-black/75 px-2.5 py-1 text-[10px] font-bold text-white">Student listing</span>
                     </div>
                     <div className="p-3.5">
@@ -45,7 +47,7 @@ export async function StudentListingsSlider() {
                     </div>
                   </Link>
                   <div className="flex items-center justify-between border-t border-stone-100 px-3.5 py-2.5 text-xs text-stone-500">
-                    <span>{saved.has(product.id) ? "Saved" : "Shared by a seller"}</span>
+                    <span>Shared by a student seller</span>
                     <Link href={`/product/${product.id}`} className="font-semibold text-stone-900 underline-offset-4 hover:underline">View post</Link>
                   </div>
                 </article>
