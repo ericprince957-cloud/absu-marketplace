@@ -58,7 +58,8 @@ html.dark .hover\\:bg-white:hover { background-color: #202020; }
 
 /* Keep older ABSU blue utility classes aligned with the Vector Codes black-and-gold identity. */
 .bg-indigo-50, .bg-indigo-100, .bg-blue-50, .bg-blue-100 { background-color: #f5f5f4 !important; }
-.text-indigo-50, .text-indigo-100, .text-blue-600, .text-blue-700, .text-blue-800 { color: #292524 !important; }
+.text-indigo-50, .text-indigo-100 { color: #f5f5f5 !important; }
+.text-blue-600, .text-blue-700, .text-blue-800 { color: #292524 !important; }
 .border-indigo-100, .border-indigo-200, .border-blue-200 { border-color: #d6d3d1 !important; }
 .bg-indigo-400, .bg-indigo-500, .bg-blue-500, .bg-blue-600 { background-color: #d4af37 !important; }
 .bg-indigo-700, .bg-blue-700, .bg-blue-800 { background-color: #0a0a0a !important; }
