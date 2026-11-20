@@ -1,8 +1,8 @@
 # ABSU Marketplace
 
-A student marketplace for Abia State University (ABSU), Uturu, Nigeria. Students can register, browse and search products, apply to become sellers, list items with photos, place orders and manage membership.
+A student marketplace for Abia State University (ABSU), Uturu, Nigeria. Anyone can browse and search products for free. Buyers can contact sellers and arrange purchases directly on WhatsApp without an account. Approved sellers can list items with photos and manage their storefront.
 
-**Membership:** the first 50 verified students receive lifetime free access. Other eligible students pay **NGN 1,500 for 30 days** through Paystack.
+**Seller access:** the first 50 approved sellers receive lifetime-free access. Every approved seller after that pays **NGN 1,500 for 30 days** through Paystack. Buyers never pay a subscription or platform fee.
 
 ## Current project status
 
