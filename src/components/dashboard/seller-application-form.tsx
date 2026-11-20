@@ -18,7 +18,7 @@ export function SellerApplicationForm({ defaultPhone, defaultFullName }: { defau
         ABSU students and people living or doing business around Uturu can apply. We only ask for basic contact and pickup details so buyers and our team can identify a seller if there is a problem. No matric number or student ID is required.
       </div>
       <FormMessage state={state} />
-      <TextField label="Your full name" name="full_name_display" defaultValue={defaultFullName ?? ""} disabled hint="Your account name is used to identify your seller profile." />
+      <TextField label="Your full name" name="full_name" defaultValue={defaultFullName ?? ""} required placeholder="Your real name" hint="Use a name buyers or our team can identify if there is a problem." />
       <TextField label="Shop or business name" name="business_name" required error={fe?.business_name} placeholder="e.g. Chioma's Thrift" />
       <TextAreaField label="What will you sell?" name="description" rows={3} required error={fe?.description} hint="Briefly describe your products or services." />
       <TextField label="Main category (optional)" name="categories_text" error={fe?.categories_text} placeholder="Fashion, food, gadgets, services..." />
