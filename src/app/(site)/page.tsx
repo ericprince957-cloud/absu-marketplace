@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, BookOpen, BriefcaseBusiness, Laptop, Search, Shirt, ShoppingBag, Sparkles, Store, Utensils } from "lucide-react";
 import { ProductGrid } from "@/components/product/product-grid";
+import { StudentListingsSlider } from "@/components/layout/student-listings-slider";
 import { LinkButton } from "@/components/ui/button";
 import { membership } from "@/config/site";
 import { listCategories } from "@/lib/data/categories";
@@ -109,6 +110,8 @@ export default async function HomePage() {
           <LinkButton href="/pricing" size="md" className="shrink-0 bg-brand-700 text-white hover:bg-brand-800">See membership <ArrowRight className="size-4" /></LinkButton>
         </div>
       </section>
+
+      <StudentListingsSlider />
 
       <section aria-labelledby="featured-heading">
         <div className="mb-4 flex items-end justify-between gap-3">
