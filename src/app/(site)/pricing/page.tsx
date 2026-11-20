@@ -7,30 +7,30 @@ import { getFreeSlotsRemaining } from "@/lib/data/membership";
 import { formatNaira } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Pricing and membership",
-  description: "The first 50 ABSU students get free lifetime membership. After that, membership is ₦1,500 per month.",
+  title: "Seller pricing",
+  description: "Buyers use ABSU Marketplace for free. The first 50 approved sellers get lifetime-free access; other sellers pay ₦1,500 every 30 days.",
 };
 
 const faqs = [
   {
     q: "Is browsing free?",
-    a: "Yes. Anyone can browse and search products without an account. Membership is needed to sell, order and see seller contacts.",
+    a: "Yes. Buyers can browse, search, contact sellers and buy products for free. No buyer account or subscription is required to contact a seller on WhatsApp.",
   },
   {
-    q: "How do I get a free lifetime spot?",
-    a: `Create an account and verify your email. Free spots are given in the order students verify, up to ${membership.freeSlotLimit}. The system assigns them automatically and safely, so two people can never take the same spot.`,
+    q: "How do sellers get one of the 50 free lifetime spots?",
+    a: `Apply to become a seller. The first ${membership.freeSlotLimit} seller applications approved by an administrator receive lifetime-free seller access. Buyers and ordinary account registrations never use these slots.`,
   },
   {
     q: "Will I ever be charged if I get a free spot?",
-    a: "No. Free lifetime members are never charged and never asked to pay.",
+    a: "No. Founding sellers keep seller access for life and are never charged for it.",
   },
   {
-    q: "How does monthly payment work?",
-    a: `You pay ${formatNaira(membership.priceNaira)} through Paystack. Each payment adds ${membership.periodDays} days of access. We confirm every payment on our server with Paystack before activating your membership.`,
+    q: "How does seller payment work?",
+    a: `Approved sellers who are not among the first ${membership.freeSlotLimit} pay ${formatNaira(membership.priceNaira)} through Paystack for ${membership.periodDays} days of seller access. We verify every payment with Paystack before activating access.`,
   },
   {
     q: "Is the membership fee the price of products?",
-    a: "No. Membership is separate. Prices of items are agreed between buyer and seller, and you pay the seller directly.",
+    a: "No. Buyers pay no platform fee or subscription. Product prices are agreed between buyer and seller, and payment goes directly to the seller.",
   },
 ];
 
@@ -39,7 +39,7 @@ export default async function PricingPage() {
 
   return (
     <>
-      <PageHeader title="Pricing and membership" description="Start free. Keep it free if you are among the first students in." />
+      <PageHeader title="Seller pricing" description="Buyers are always free. Only approved sellers pay to list and manage products." />
       <PricingPlans slotsRemaining={slots} signedIn={Boolean(user)} />
 
       <section className="mt-14" aria-labelledby="faq">
