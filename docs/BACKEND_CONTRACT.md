@@ -16,7 +16,7 @@ Source of truth for business rules: `src/config/site.ts` (frontend) and `app_set
 | When assigned | Atomically inside `review_seller_application` immediately after an admin approves the seller. Never on registration or email verification. |
 | Atomicity | Assignment runs under a transaction-level advisory lock; `free_slot_number` is UNIQUE with CHECK 1..50. 60 simultaneous seller approvals must still yield exactly 50 free rows. |
 | Paid membership | **NGN 1,500 (150000 kobo) = 30 days.** Each successful payment extends `paid_until` by 30 days from `max(now, current paid_until)`. |
-| Renewal model | **Manual renewal.** The member pays again (allowed in the last 7 days before expiry, or after expiry). There is no card-on-file auto-debit in v1. |
+| Renewal model | **Manual renewal.** The seller pays again (allowed in the last 7 days before expiry, or after expiry). There is no card-on-file auto-debit in v1. |
 | What seller access unlocks | Creating/editing product listings and uploading photos. Buyers browse, search, contact sellers and buy for free, including guest WhatsApp checkout. |
 | Item payments | Not handled by the platform. Buyer pays seller in person. Orders are requests. |
 | Admin creation | Never from the UI. First admin: after they register, run `insert into user_roles (user_id, role) values ('<uuid>', 'admin');` as the database owner. |
@@ -223,7 +223,7 @@ RLS is enabled on **every** table in `public`. No table is readable by `anon` un
 | payments | none | select own | select all |
 | subscriptions | none | select own | select all |
 | categories | select `is_active` | same | all (insert/update/delete) |
-| products | select `status='approved'` | + own rows (any status); insert/update/delete own if seller AND active member | select all; changes via `moderate_product` |
+| products | select `status='approved'` | + own rows (any status); insert/update/delete own if seller AND active seller access | select all; changes via `moderate_product` |
 | product_images | select where parent visible | insert/delete for own products | select all; delete any |
 | orders / order_items | none | select where buyer or seller; buyer order requests do not require membership | select all |
 | saved_products | none | all on own rows | none |
