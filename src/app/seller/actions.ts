@@ -58,7 +58,7 @@ export async function saveProduct(id: string | null, formData: FormData): Promis
   if (!roles.includes("seller")) return fail("Only approved sellers can list products.");
 
   const membership = await getMembership(user.id);
-  if (!membership.hasAccess) return fail("Your membership is not active. Renew it to list products.");
+  if (!membership.hasAccess) return fail("Your seller access is not active. Renew it to list products.");
 
   const parsed = productSchema.safeParse(formToObject(formData));
   if (!parsed.success) return validationFailure(parsed.error);

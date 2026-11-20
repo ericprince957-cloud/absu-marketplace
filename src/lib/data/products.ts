@@ -133,7 +133,7 @@ export async function getSellerContact(
   productId: string,
 ): Promise<{ whatsapp: string | null; phone: string | null; full_name: string | null } | null> {
   const supabase = await createClient();
-  // Database function: returns a row only for logged-in users with active membership.
+  // Database function: returns WhatsApp contact for an approved, non-suspended seller listing.
   const { data, error } = await supabase.rpc("get_seller_contact", { p_product_id: productId });
   if (error) {
     console.error("[data] getSellerContact failed:", error.message);

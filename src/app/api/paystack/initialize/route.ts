@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { membership } from "@/config/site";
-import { getMembership, getUser } from "@/lib/auth";
+import { getMembership, getRoles, getUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { getSiteUrl } from "@/lib/site-url";
 import { initializeTransaction, isPaystackConfigured } from "@/lib/paystack/client";
@@ -25,7 +25,7 @@ function sameOrigin(request: NextRequest): boolean {
 }
 
 /**
- * Starts a membership payment.
+ * Starts a seller-access payment.
  * The amount is decided here on the server. The browser sends nothing about price.
  */
 export async function POST(request: NextRequest) {
@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
   const user = await getUser();
   if (!user || !user.email) return json({ error: "Please log in first." }, 401);
   if (!user.email_confirmed_at) return json({ error: "Verify your email before paying." }, 403);
+  const roles = await getRoles(user.id);
+  if (!roles.includes("seller")) return json({ error: "Seller approval is required before purchasing seller access." }, 403);
 
   if (!isPaystackConfigured()) {
     return json({ error: "Payments are not switched on yet. Please try again later." }, 503);
@@ -42,10 +44,10 @@ export async function POST(request: NextRequest) {
   // Never charge permanent free members, and avoid accidental double payment.
   const current = await getMembership(user.id);
   if (current.state === "free_lifetime") {
-    return json({ error: "You are a free lifetime member. You never need to pay." }, 409);
+    return json({ error: "You have lifetime-free seller access. You never need to pay." }, 409);
   }
   if (current.state === "active" && !current.canRenew) {
-    return json({ error: `Your membership is already active. You can renew within ${membership.renewWindowDays} days of expiry.` }, 409);
+    return json({ error: `Your seller access is already active. You can renew within ${membership.renewWindowDays} days of expiry.` }, 409);
   }
 
   const reference = generateReference();
@@ -57,7 +59,7 @@ export async function POST(request: NextRequest) {
     p_amount_kobo: membership.priceKobo,
   });
   if (pendingError) {
-    if (pendingError.message.includes("already_free")) return json({ error: "You are a free lifetime member." }, 409);
+    if (pendingError.message.includes("already_free")) return json({ error: "You have lifetime-free seller access." }, 409);
     console.error("[paystack] create_pending_payment failed:", pendingError.message);
     return json({ error: "We could not start your payment. Please try again." }, 500);
   }

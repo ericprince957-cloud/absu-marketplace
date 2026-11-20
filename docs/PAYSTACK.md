@@ -1,6 +1,6 @@
 # Paystack payment flow
 
-Membership is NGN 1,500 per 30 days. Free lifetime members never see a pay button and are rejected by the server if they try.
+Seller access is NGN 1,500 per 30 days for approved sellers outside the first 50. Buyers never pay, and lifetime-free founding sellers never see a pay button.
 
 ## The only thing you must add
 
@@ -25,7 +25,7 @@ https://YOUR-DOMAIN/api/paystack/webhook
 Browser                    Next.js server                    Paystack              Supabase
    |  click "Pay"                |                                |                     |
    |---POST /api/paystack/initialize-->                           |                     |
-   |                             | check session, email verified, not free member       |
+   |                             | check session, verified email, approved seller role, not lifetime-free seller       |
    |                             | create reference ABSU-<uuid>                         |
    |                             |------rpc create_pending_payment (as user)----------->|
    |                             |--- POST /transaction/initialize (amount set HERE) -->|
@@ -51,7 +51,7 @@ Both the callback and the webhook call `processMembershipPayment()` in `src/lib/
 | Wrong amount or currency but "success" | Rejected, recorded as failed with a review note, access not granted. |
 | Someone else's reference | Reference must match `ABSU-<uuid>`; the database matches the reference to the user who created it and checks `metadata.user_id`. |
 | Paystack or database down | Callback shows "confirming"; webhook returns 500 so Paystack retries. |
-| Free member charged | Blocked in `/api/paystack/initialize` and again in `create_pending_payment`. |
+| Buyer or lifetime-free seller charged | Blocked in `/api/paystack/initialize` and again in `create_pending_payment`. |
 | Cross-site POST to initialize | Origin header must match the site. |
 
 ## Statuses
@@ -65,7 +65,7 @@ v1 uses **manual monthly renewal**: each payment adds 30 days; a member can pay 
 ## Testing before going live
 
 1. Use the **test** key (`sk_test_...`). Use Paystack's test cards (see Paystack docs "Test payments").
-2. Register a fresh account after all 50 free slots are used (or use an account that has no free slot), open `/dashboard/membership`, press Pay, complete checkout. You should land on `?payment=success` and see the active membership and a payment row.
+2. Apply and get approved as a seller after all 50 lifetime-free seller slots are allocated (or use an approved seller without a free slot), open `/dashboard/membership`, press Pay, and complete checkout. You should land on `?payment=success` and see the active membership and a payment row.
 3. Use Paystack's dashboard "Resend webhook" on that transaction and confirm nothing changes (idempotent).
 4. Start checkout and close it; the payment stays `pending`/`abandoned`, no access granted.
 5. Only then switch to the **live** key and update the webhook if the URL differs.

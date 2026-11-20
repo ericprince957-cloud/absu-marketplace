@@ -152,7 +152,7 @@ export type MembershipState = "free_lifetime" | "active" | "expired" | "none";
 
 export interface MembershipInfo {
   state: MembershipState;
-  /** True when the user may sell, order and see seller contacts. */
+  /** True when an approved seller may create and manage listings. */
   hasAccess: boolean;
   freeSlotNumber: number | null;
   paidUntil: string | null;

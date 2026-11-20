@@ -12,12 +12,12 @@ Source of truth for business rules: `src/config/site.ts` (frontend) and `app_set
 
 | Topic | Decision |
 | --- | --- |
-| Free lifetime slots | First **50** users to **verify their email**, in verification order. Never charged, never expires. |
-| When assigned | Automatically by a database trigger the moment `auth.users.email_confirmed_at` goes from NULL to a value (or on insert if already confirmed). Never from the browser. |
-| Atomicity | Assignment runs under a transaction-level advisory lock; `free_slot_number` is UNIQUE with CHECK 1..50. 60 simultaneous verifications must still yield exactly 50 free rows. |
+| Free lifetime slots | First **50 approved sellers**, in approval order. Buyers and ordinary registrations never consume slots. Never charged, never expires. |
+| When assigned | Atomically inside `review_seller_application` immediately after an admin approves the seller. Never on registration or email verification. |
+| Atomicity | Assignment runs under a transaction-level advisory lock; `free_slot_number` is UNIQUE with CHECK 1..50. 60 simultaneous seller approvals must still yield exactly 50 free rows. |
 | Paid membership | **NGN 1,500 (150000 kobo) = 30 days.** Each successful payment extends `paid_until` by 30 days from `max(now, current paid_until)`. |
-| Renewal model | **Manual renewal.** The member pays again (allowed in the last 7 days before expiry, or after expiry). There is no card-on-file auto-debit in v1. |
-| What membership unlocks | Selling (create/edit products, upload photos), placing orders, seeing seller contact details. Browsing/searching is public. |
+| Renewal model | **Manual renewal.** The seller pays again (allowed in the last 7 days before expiry, or after expiry). There is no card-on-file auto-debit in v1. |
+| What seller access unlocks | Creating/editing product listings and uploading photos. Buyers browse, search, contact sellers and buy for free, including guest WhatsApp checkout. |
 | Item payments | Not handled by the platform. Buyer pays seller in person. Orders are requests. |
 | Admin creation | Never from the UI. First admin: after they register, run `insert into user_roles (user_id, role) values ('<uuid>', 'admin');` as the database owner. |
 | Seller approval | Admin approves `seller_applications`; approval inserts `user_roles(seller)`. |
@@ -53,7 +53,7 @@ inline as `column uuid references table(id)` gives the required default names `<
 `phone text`, `whatsapp text`, `faculty text`, `department text`, `level text`, `hostel text`, `bio text`,
 `avatar_url text`, `is_suspended boolean not null default false`, `created_at`, `updated_at`.
 
-- Trigger on `auth.users` insert: create the profile (`full_name` and `phone` from `raw_user_meta_data`, `email` from the user) and insert `user_roles(student)`.
+- Trigger on `auth.users` insert: create the profile (`full_name` and `phone` from `raw_user_meta_data`, `email` from the user) and insert `user_roles(student)`. It does **not** allocate a seller slot.
 - Trigger on `auth.users` email change: keep `profiles.email` in sync.
 - Users can UPDATE only their own row and only these columns: `full_name, username, phone, whatsapp, faculty, department, level, hostel, bio, avatar_url` (use column-level `GRANT UPDATE (...)` and `REVOKE` the rest). `is_suspended`, `email`, `id` are never user-writable.
 - Constraints: `username ~ '^[a-z0-9_]{3,30}$'`.
@@ -72,7 +72,7 @@ See section 2.
 
 - `kind='free_lifetime'` requires `free_slot_number is not null and paid_until is null` (CHECK).
 - `kind='paid'` requires `free_slot_number is null`.
-- The frontend decides "is active" as: free: `status='active'`; paid: `status='active' AND paid_until > now()`. `has_active_membership()` MUST use the same rule. A cron job is optional; correctness never depends on one.
+- Entitlements apply only to approved sellers. `has_active_membership()` also requires the `seller` role and a non-suspended profile. Free: `status='active'`; paid: `status='active' AND paid_until > now()`. Buyers never need an entitlement.
 - No client writes.
 
 ### payments
@@ -158,9 +158,7 @@ Errors are raised with `RAISE EXCEPTION '<token>'`; the frontend matches on thes
 | `get_free_slots_remaining() returns int` | anon, authenticated | `free_slot_limit - count(free_lifetime)`, never below 0 |
 
 ### Membership allocation
-`claim_free_slot(p_user_id uuid) returns boolean` : internal, called only by the auth trigger.
-1. `pg_advisory_xact_lock` on a fixed key. 2. Return false if the user already has an entitlement. 3. Count `free_lifetime` rows; if `>= free_slot_limit` return false. 4. Insert `free_lifetime` with `free_slot_number = count + 1`, `status='active'`.
-Trigger `AFTER UPDATE OF email_confirmed_at ON auth.users` (OLD null, NEW not null) and `AFTER INSERT` when `email_confirmed_at` is already set.
+`claim_free_slot(p_user_id uuid) returns boolean` is internal and called only by `review_seller_application` after the seller role is inserted. It requires an approved seller, a non-suspended profile and no existing entitlement. Under a fixed advisory transaction lock it counts seller `free_lifetime` rows, stops at `free_slot_limit`, then inserts the next slot. Auth signup and email-confirmation triggers never allocate slots.
 
 ### Payments  (the Paystack flow depends on these)
 
@@ -191,7 +189,7 @@ Only allowed targets: `failed`, `abandoned`. Only changes rows currently `pendin
 
 ### Orders
 **`place_order(p_product_id uuid, p_quantity int, p_note text) returns uuid`**  : `authenticated`. Lock the product row `FOR UPDATE`. Raise, in this order:
-`not_authenticated`, `membership_required` (caller lacks active membership), `not_available` (product missing or not `approved`), `own_product`, `out_of_stock` (`quantity > products.quantity` or `p_quantity < 1`).
+`not_authenticated`, `account_suspended`, `not_available` (product missing or not `approved`), `own_product`, `out_of_stock` (`quantity > products.quantity` or `p_quantity < 1`). Buyer order requests never require seller membership.
 On success: decrement `products.quantity` by `p_quantity`; insert `orders` (`total = price * qty`) and one `order_items` snapshot (`title`, `unit_price`); notify the seller (link `/seller/orders`); return the order id.
 
 **`update_order_status(p_order_id uuid, p_status text) returns void`**  : `authenticated`.
@@ -199,9 +197,9 @@ Allowed transitions: buyer: `pending -> cancelled`. Seller: `pending -> confirme
 Moving to `cancelled` restores the item quantities to the product (only if the order was not already cancelled). Notify the other party.
 
 ### Seller, moderation, admin
-**`get_seller_contact(p_product_id uuid) returns table(whatsapp text, phone text, full_name text)`**  : `authenticated`. Returns ONE row only if `has_active_membership(auth.uid())` and the product is `approved`; otherwise returns zero rows (no error). Never exposes email.
+**`get_seller_contact(p_product_id uuid) returns table(whatsapp text, phone text, full_name text)`** : `anon`, `authenticated`. Returns only the seller's WhatsApp number (phone output is NULL) and display name for an approved product whose seller is not suspended. This is intentionally public so buyers can contact sellers without accounts or fees. Never exposes email.
 
-**`review_seller_application(p_application_id uuid, p_approve boolean, p_note text) returns void`**  : `is_admin()` else `forbidden`. Only `pending` applications. Updates status, `admin_note`, `reviewed_by/at`. On approve: `insert into user_roles (user_id, role) values (..., 'seller') on conflict do nothing`. Notify the applicant.
+**`review_seller_application(p_application_id uuid, p_approve boolean, p_note text) returns void`**  : `is_admin()` else `forbidden`. Only `pending` applications. Updates status, `admin_note`, `reviewed_by/at`. On approve: insert the `seller` role and call `claim_free_slot` in the same transaction. The first 50 approved sellers get lifetime-free access; later sellers pay NGN 1,500 per 30 days. Notify the applicant with the correct seller-access status.
 
 **`moderate_product(p_product_id uuid, p_status text, p_note text) returns void`**  : `is_admin()`. `p_status` in `approved | rejected | archived`. Rejecting requires a non-empty note (`note_required`). Stores `moderation_note`. Notifies the seller (link `/seller/products`).
 
@@ -225,9 +223,9 @@ RLS is enabled on **every** table in `public`. No table is readable by `anon` un
 | payments | none | select own | select all |
 | subscriptions | none | select own | select all |
 | categories | select `is_active` | same | all (insert/update/delete) |
-| products | select `status='approved'` | + own rows (any status); insert/update/delete own if seller AND active member | select all; changes via `moderate_product` |
+| products | select `status='approved'` | + own rows (any status); insert/update/delete own if seller AND active seller access | select all; changes via `moderate_product` |
 | product_images | select where parent visible | insert/delete for own products | select all; delete any |
-| orders / order_items | none | select where buyer or seller | select all |
+| orders / order_items | none | select where buyer or seller; buyer order requests do not require membership | select all |
 | saved_products | none | all on own rows | none |
 | seller_applications | none | insert own pending, select own | select all |
 | notifications | none | select own, update `is_read` | none |
@@ -243,7 +241,7 @@ Also: a suspended user (`is_suspended`) loses all write access (fold this into `
 Bucket **`product-images`**: public read, `file_size_limit` 5 MB, `allowed_mime_types` `image/jpeg, image/png, image/webp`.
 Object path convention (the frontend relies on it): `{user_id}/{product_id}/{random-uuid}.jpg`.
 Policies on `storage.objects` for this bucket:
-- INSERT: `auth.uid()::text = (storage.foldername(name))[1]` AND `is_seller()` AND `has_active_membership()`.
+- INSERT: `auth.uid()::text = (storage.foldername(name))[1]` AND `is_seller()` AND `has_active_membership()` (seller access required).
 - UPDATE/DELETE: same folder rule (owner), or `is_admin()`.
 - SELECT: public bucket (anyone can read by URL).
 The frontend stores only `path` in `product_images.path` and builds `${SUPABASE_URL}/storage/v1/object/public/product-images/${path}`.
