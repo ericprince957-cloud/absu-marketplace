@@ -30,6 +30,7 @@ export async function proxy(request: NextRequest) {
   // scripts and inline scripts rendered by Server Components.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("x-pathname", request.nextUrl.pathname);
   requestHeaders.set("Content-Security-Policy", contentSecurityPolicy);
 
   const nonceRequest = new NextRequest(request, { headers: requestHeaders });
