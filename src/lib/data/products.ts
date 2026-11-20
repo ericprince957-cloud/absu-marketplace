@@ -14,6 +14,7 @@ export type ProductSort = "newest" | "price_asc" | "price_desc";
 export interface ProductQuery {
   q?: string;
   categoryId?: string;
+  sellerId?: string;
   minPrice?: number;
   maxPrice?: number;
   condition?: ProductCondition;
@@ -39,8 +40,9 @@ export async function listProducts(query: ProductQuery = {}): Promise<{ products
   let req = supabase.from("products").select(PRODUCT_SELECT, { count: "exact" }).eq("status", "approved");
 
   const q = sanitizeSearch(query.q);
-  if (q) req = req.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
+  if (q) req = req.or(\`title.ilike.%\${q}%,description.ilike.%\${q}%\`);
   if (query.categoryId && isUuid(query.categoryId)) req = req.eq("category_id", query.categoryId);
+  if (query.sellerId && isUuid(query.sellerId)) req = req.eq("seller_id", query.sellerId);
   if (query.minPrice !== undefined && Number.isFinite(query.minPrice)) req = req.gte("price", query.minPrice);
   if (query.maxPrice !== undefined && Number.isFinite(query.maxPrice)) req = req.lte("price", query.maxPrice);
   if (query.condition) req = req.eq("condition", query.condition);
@@ -99,7 +101,7 @@ export async function listSavedProducts(userId: string): Promise<Product[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("saved_products")
-    .select(`created_at, products(${PRODUCT_SELECT})`)
+    .select(\`created_at, products(\${PRODUCT_SELECT})\`)
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
   if (error) {

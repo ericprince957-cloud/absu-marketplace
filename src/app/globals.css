@@ -31,13 +31,18 @@
   button, a, input { -webkit-tap-highlight-color: transparent; }
 }
 
+.market-product-card { border: 1px solid #eeeae2; box-shadow: 0 2px 10px rgb(20 20 20 / 3%); }
+.market-product-card:hover { border-color: #ded4b5; box-shadow: 0 14px 34px rgb(20 20 20 / 9%); }
+.market-product-card:focus-within { border-color: #d4af37; }
+.market-product-card img { will-change: transform; }
+
 html.dark body { background: #090909; color: #f5f5f5; }
 html.dark .bg-white { background-color: #111111; }
 html.dark .bg-stone-50 { background-color: #090909; }
 html.dark .bg-stone-100 { background-color: #1c1c1c; }
 html.dark .bg-brand-50 { background-color: #171717; }
 html.dark .bg-brand-100 { background-color: #242424; }
-html.dark .text-stone-900 { color: #f5f5f5; }
+html.dark .text-stone-950, html.dark .text-stone-900 { color: #f5f5f5; }
 html.dark .text-stone-800 { color: #eeeeee; }
 html.dark .text-stone-700 { color: #d4d4d4; }
 html.dark .text-stone-600 { color: #b3b3b3; }
@@ -53,8 +58,10 @@ html.dark input, html.dark textarea, html.dark select {
 }
 html.dark input::placeholder, html.dark textarea::placeholder { color: #858585; }
 html.dark .shadow-sm, html.dark .shadow-md { --tw-shadow-color: rgb(0 0 0 / 35%); }
+html.dark .market-product-card { background: #111; border-color: #292929; }
+html.dark .market-product-card:hover { border-color: #65521c; }
+html.dark .market-product-card .bg-stone-100 { background: #1c1c1c; }
 
-/* Keep older ABSU blue utility classes aligned with the Vector Codes black-and-gold identity. */
 .bg-indigo-50, .bg-indigo-100, .bg-blue-50, .bg-blue-100 { background-color: #f5f5f4 !important; }
 .text-indigo-50, .text-indigo-100 { color: #f5f5f5 !important; }
 .text-blue-600, .text-blue-700, .text-blue-800 { color: #292524 !important; }
