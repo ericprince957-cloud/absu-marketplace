@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutGrid, UserRound } from "lucide-react";
-import { get } from "http";
 
 const items = [
   { href: "/", label: "Home", icon: Home, matches: (path: string) => path === "/" },
   { href: "/marketplace", label: "Browse", icon: LayoutGrid, matches: (path: string) => path.startsWith("/marketplace") || path.startsWith("/category") || path.startsWith("/product") },
-  { href: "/dashboard", label: "Account", icon: UserRound, matches: (path: string) => path.startsWith("/dashboard") },
+  { href: "/login", label: "Account", icon: UserRound, matches: (path: string) => path.startsWith("/dashboard") || path.startsWith("/login") || path.startsWith("/register") },
 ];
 
 export function MobileBottomNav() {
