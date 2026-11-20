@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { VectorCodesCredit } from "@/components/layout/vector-codes-credit";
@@ -6,10 +7,13 @@ import { CookieConsent } from "@/components/layout/cookie-consent";
 import { PwaRegister } from "@/components/layout/pwa-register";
 import { PwaInstallPrompt } from "@/components/layout/pwa-install-prompt";
 
+const siteUrl = siteConfig.url.replace(/\\/$/, "");
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: { default: `${siteConfig.name} | Buy and sell at ABSU`, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
+  alternates: { canonical: "/" },
   manifest: "/manifest.webmanifest",
   applicationName: siteConfig.name,
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.shortName },
@@ -18,8 +22,14 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    url: siteUrl,
     type: "website",
     locale: "en_NG",
+  },
+  twitter: {
+    card: "summary",
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
 };
 
@@ -31,10 +41,41 @@ export const viewport: Viewport = {
 
 const themeScript = "(() => { try { const saved = localStorage.getItem('absu-marketplace-theme'); const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches; if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.classList.add('dark'); } catch {} })();";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteConfig.name,
+    url: siteUrl,
+    description: siteConfig.description,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteConfig.name,
+    url: siteUrl,
+    description: siteConfig.description,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  },
+];
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang="en-NG" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
+      <head>
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:shadow">
           Skip to content
