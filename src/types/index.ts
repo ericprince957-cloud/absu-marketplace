@@ -110,11 +110,16 @@ export interface SellerApplication {
   description: string;
   categories_text: string | null;
   phone: string;
+  matric_number: string | null;
+  faculty: string | null;
+  department: string | null;
+  level: string | null;
+  verification_document_path: string | null;
   status: SellerApplicationStatus;
   admin_note: string | null;
   created_at: string;
   reviewed_at: string | null;
-  profiles?: { full_name: string | null } | null;
+  profiles?: { full_name: string | null; email?: string | null } | null;
 }
 
 export type PaymentStatus = "pending" | "success" | "failed" | "abandoned" | "refunded";
