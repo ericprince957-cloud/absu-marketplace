@@ -145,3 +145,15 @@ export async function submitSellerReport(_prev: ActionState, formData: FormData)
   revalidatePath("/admin/reports");
   return success("Report sent to the marketplace team. Thank you for helping keep the community safe.");
 }
+
+export async function updateSellerReport(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const reportId = String(formData.get("report_id") ?? "");
+  const status = String(formData.get("status") ?? "");
+  const adminNote = String(formData.get("admin_note") ?? "").trim().slice(0, 500);
+  if (!UUID.test(reportId) || !["open","reviewing","resolved","dismissed"].includes(status)) return;
+  const supabase = await createClient();
+  const { error } = await supabase.from("seller_reports").update({ status, admin_note: adminNote || null, reviewed_at: new Date().toISOString() }).eq("id", reportId);
+  if (error) console.error("[admin] update seller report failed:", error.message);
+  revalidatePath("/admin/reports");
+}
