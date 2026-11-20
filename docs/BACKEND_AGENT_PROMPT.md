@@ -52,15 +52,15 @@ Read these first, in this order, completely:
 
 **Triggers:** new `auth.users` row -> create `profiles` + `user_roles(student)`; email change -> sync `profiles.email`; `email_confirmed_at` NULL -> not NULL (or inserted already confirmed) -> `claim_free_slot()`; `updated_at`; product guard (non-admins cannot approve/reject or change `seller_id`); max 5 images per product.
 
-**Free-50 allocation (the most important correctness requirement):** `claim_free_slot` must be atomic under concurrency: take a transaction-level advisory lock, count, insert with the next `free_slot_number`, with `UNIQUE` + `CHECK (1..50)` as a second line of defence. Slots are assigned **only after email verification**, in verification order, and never revoked. Document this in `docs/BACKEND_SETUP.md`.
+**Free-50 allocation (the most important correctness requirement):** `claim_free_slot` must be atomic under concurrency: take a transaction-level advisory lock, count, insert with the next `free_slot_number`, with `UNIQUE` + `CHECK (1..50)` as a second line of defence. Slots are assigned **only after admin approval of a seller application**, in approval order, never to buyers, and never revoked. Document this in `docs/BACKEND_SETUP.md`.
 
 **Payments:** `create_pending_payment` (called as the user), `apply_membership_payment` and `mark_payment_status` (called ONLY by the service role from the Next.js server), idempotent per reference, with the amount/currency/user checks in the contract. A browser must never be able to grant itself membership, insert a payment, or alter an entitlement.
 
-**Marketplace logic:** `place_order` (locks the product row, checks membership/stock/ownership, snapshots price and title, decrements stock, notifies the seller), `update_order_status` (transition rules, restores stock on cancel), `get_seller_contact` (members only), `review_seller_application` (approving grants the `seller` role), `moderate_product`, `admin_set_suspended`, `admin_extend_membership`, `admin_stats`, `get_free_slots_remaining`.
+**Marketplace logic:** `place_order` (locks the product row, checks account status/stock/ownership but never seller membership, snapshots price and title, decrements stock, notifies the seller), `update_order_status` (transition rules, restores stock on cancel), `get_seller_contact` (public WhatsApp contact for approved listings only; no email or private profile fields), `review_seller_application` (approving grants the `seller` role), `moderate_product`, `admin_set_suspended`, `admin_extend_membership`, `admin_stats`, `get_free_slots_remaining`.
 
 **RLS:** exactly the matrix in contract section 5. Admin checks use `is_admin()`, never a client-supplied value. Counterparties in an order can read each other's `profiles` row (needed so names show in orders); nobody else can read other people's profiles. `seller_public` must expose no private fields.
 
-**Storage:** public bucket `product-images`, 5 MB limit, jpeg/png/webp only, upload/delete restricted to the owner's own folder `{auth.uid()}/...` for active-member sellers, admins can delete.
+**Storage:** public bucket `product-images`, 5 MB limit, jpeg/png/webp only, upload/delete restricted to the owner's own folder `{auth.uid()}/...` for active sellers with paid or lifetime-free seller access, admins can delete.
 
 **Auth (dashboard/CLI config, documented):** email confirmation ON, Site URL, redirect allow-list, the two `token_hash` email templates from contract section 7, custom SMTP, password min length 8.
 
