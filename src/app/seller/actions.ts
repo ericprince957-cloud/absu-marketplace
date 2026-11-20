@@ -27,16 +27,16 @@ export async function submitSellerApplication(_prev: ActionState, formData: Form
     .eq("user_id", user.id)
     .eq("status", "pending")
     .maybeSingle();
-  if (open) return fail("You already have an application waiting for review.");
-
-  const { error } = await supabase.from("seller_applications").insert({
-    user_id: user.id,
+  const application = {
     business_name: parsed.data.business_name,
     description: parsed.data.description,
     categories_text: parsed.data.categories_text ?? null,
     phone: parsed.data.phone,
     location: parsed.data.location,
-  });
+  };
+  const { error } = open
+    ? await supabase.from("seller_applications").update(application).eq("id", open.id).eq("user_id", user.id)
+    : await supabase.from("seller_applications").insert({ ...application, user_id: user.id });
   if (error) {
     console.error("[actions] submitSellerApplication failed:", error.message);
     return fail("We could not submit your application. Please try again.");
