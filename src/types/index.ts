@@ -110,6 +110,7 @@ export interface SellerApplication {
   description: string;
   categories_text: string | null;
   phone: string;
+  location?: string | null;
   matric_number: string | null;
   faculty: string | null;
   department: string | null;
