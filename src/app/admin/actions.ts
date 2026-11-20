@@ -122,3 +122,26 @@ export async function updateCategory(formData: FormData): Promise<void> {
   revalidatePath("/admin/categories");
   revalidatePath("/", "layout");
 }
+
+export async function submitSellerReport(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const { requireUser } = await import("@/lib/auth");
+  const reporter = await requireUser();
+  const sellerId = String(formData.get("seller_id") ?? "");
+  const productId = String(formData.get("product_id") ?? "");
+  const reason = String(formData.get("reason") ?? "");
+  const details = String(formData.get("details") ?? "").trim();
+  const allowed = ["scam_or_fraud","fake_or_misleading_listing","unsafe_or_abusive","payment_issue","unresponsive_seller","other"];
+  if (!UUID.test(sellerId) || !UUID.test(productId) || sellerId === reporter.id || !allowed.includes(reason) || details.length < 10 || details.length > 1000) {
+    return fail("Please select a reason and provide at least 10 characters of detail.");
+  }
+  const supabase = await createClient();
+  const { data: product } = await supabase.from("products").select("id,seller_id").eq("id", productId).maybeSingle();
+  if (!product || product.seller_id !== sellerId) return fail("This seller or listing could not be verified.");
+  const { error } = await supabase.from("seller_reports").insert({ reporter_id: reporter.id, seller_id: sellerId, product_id: productId, reason, details });
+  if (error) {
+    console.error("[reports] submit failed:", error.message);
+    return fail("We could not submit your report. Please try again.");
+  }
+  revalidatePath("/admin/reports");
+  return success("Report sent to the marketplace team. Thank you for helping keep the community safe.");
+}
