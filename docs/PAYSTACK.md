@@ -65,7 +65,7 @@ v1 uses **manual monthly renewal**: each payment adds 30 days; a member can pay 
 ## Testing before going live
 
 1. Use the **test** key (`sk_test_...`). Use Paystack's test cards (see Paystack docs "Test payments").
-2. Register a fresh account after all 50 free slots are used (or use an account that has no free slot), open `/dashboard/membership` as an approved seller without a free slot, press Pay, complete checkout. You should land on `?payment=success` and see the active membership and a payment row.
+2. Apply and get approved as a seller after all 50 lifetime-free seller slots are allocated (or use an approved seller without a free slot), open `/dashboard/membership`, press Pay, and complete checkout. You should land on `?payment=success` and see the active membership and a payment row.
 3. Use Paystack's dashboard "Resend webhook" on that transaction and confirm nothing changes (idempotent).
 4. Start checkout and close it; the payment stays `pending`/`abandoned`, no access granted.
 5. Only then switch to the **live** key and update the webhook if the URL differs.
