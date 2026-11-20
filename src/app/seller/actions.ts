@@ -15,12 +15,6 @@ export async function submitSellerApplication(_prev: ActionState, formData: Form
   const user = await requireUser("/seller/apply");
   const parsed = sellerApplicationSchema.safeParse(formToObject(formData));
   if (!parsed.success) return validationFailure(parsed.error);
-  if (formData.get("verification_consent") !== "on") return fail("Please confirm that your student details are accurate and may be reviewed.");
-  const document = formData.get("student_id_document");
-  if (!(document instanceof File) || document.size === 0) return fail("Upload your student ID card or current portal registration slip.");
-  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
-  if (!allowedTypes.includes(document.type) || document.size > 5 * 1024 * 1024) return fail("Use a JPG, PNG or PDF document no larger than 5 MB.");
-
   const roles = await getRoles(user.id);
   if (roles.includes("seller")) return fail("You are already an approved seller.");
 
@@ -33,29 +27,16 @@ export async function submitSellerApplication(_prev: ActionState, formData: Form
     .maybeSingle();
   if (open) return fail("You already have an application waiting for review.");
 
-  const extension = document.type === "application/pdf" ? "pdf" : document.type === "image/png" ? "png" : "jpg";
-  const documentPath = `${user.id}/${crypto.randomUUID()}.${extension}`;
-  const { error: uploadError } = await supabase.storage.from("seller-verification").upload(documentPath, document, { contentType: document.type, upsert: false });
-  if (uploadError) {
-    console.error("[actions] seller verification upload failed:", uploadError.message);
-    return fail("We could not upload your verification document. Please try again.");
-  }
-
   const { error } = await supabase.from("seller_applications").insert({
     user_id: user.id,
     business_name: parsed.data.business_name,
     description: parsed.data.description,
     categories_text: parsed.data.categories_text ?? null,
     phone: parsed.data.phone,
-    matric_number: parsed.data.matric_number,
-    faculty: parsed.data.faculty,
-    department: parsed.data.department,
-    level: parsed.data.level,
-    verification_document_path: documentPath,
+    location: parsed.data.location,
   });
   if (error) {
     console.error("[actions] submitSellerApplication failed:", error.message);
-    await supabase.storage.from("seller-verification").remove([documentPath]);
     return fail("We could not submit your application. Please try again.");
   }
 
