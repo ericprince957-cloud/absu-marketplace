@@ -19,6 +19,8 @@ export async function submitSellerApplication(_prev: ActionState, formData: Form
   if (roles.includes("seller")) return fail("You are already an approved seller.");
 
   const supabase = await createClient();
+  const { error: profileError } = await supabase.from("profiles").update({ full_name: parsed.data.full_name, phone: parsed.data.phone, whatsapp: parsed.data.phone }).eq("id", user.id);
+  if (profileError) return fail("We could not save your contact details. Please try again.");
   const { data: open } = await supabase
     .from("seller_applications")
     .select("id")
