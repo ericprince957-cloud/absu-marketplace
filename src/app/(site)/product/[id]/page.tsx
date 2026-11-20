@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, MapPin, Package, ShieldCheck, Store } from "lucide-react";
+import { ArrowUpRight, MapPin, ShieldCheck, Store } from "lucide-react";
 import { OrderForm } from "@/components/product/order-form";
 import { conditionLabel } from "@/components/product/product-card";
 import { ProductGallery } from "@/components/product/product-gallery";
@@ -12,7 +12,7 @@ import { RecentlyViewed } from "@/components/layout/recently-viewed";
 import { Card } from "@/components/ui/card";
 import { Alert, Badge } from "@/components/ui/feedback";
 import { LinkButton } from "@/components/ui/button";
-import { getMembership, getUser } from "@/lib/auth";
+import { getUser } from "@/lib/auth";
 import { getProduct, getSavedProductIds, getSellerPublic } from "@/lib/data/products";
 import { formatDate, formatNaira, initials, publicImageUrl } from "@/lib/utils";
 
@@ -35,7 +35,6 @@ export default async function ProductPage({ params }: { params: Params }) {
   if (!product) notFound();
 
   const [user, seller] = await Promise.all([getUser(), getSellerPublic(product.seller_id)]);
-  const membership = user ? await getMembership(user.id) : null;
   const saved = user ? (await getSavedProductIds(user.id, [product.id])).has(product.id) : false;
 
   const isOwner = user?.id === product.seller_id;
@@ -124,35 +123,17 @@ export default async function ProductPage({ params }: { params: Params }) {
               </>
             ) : !isLive ? (
               <p className="text-sm text-stone-600">This product is not available to order right now.</p>
-            ) : !user ? (
-              <>
-                <h2 className="font-semibold text-stone-950">Interested in this item?</h2>
-                <p className="text-sm leading-6 text-stone-600">You can browse this listing without an account. Sign in to contact the seller or place an order.</p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <LinkButton href={`/login?next=${encodeURIComponent(`/product/${product.id}`)}`}>Log in</LinkButton>
-                  <LinkButton href="/register" variant="outline">Create account</LinkButton>
-                </div>
-              </>
-            ) : !membership?.hasAccess ? (
-              <>
-                <h2 className="font-semibold">Membership needed</h2>
-                <p className="text-sm text-stone-600">
-                  {membership?.state === "none"
-                    ? "Your membership is being set up. If you just verified your email, open the membership page."
-                    : "Your membership is not active. Renew to order and contact sellers."}
-                </p>
-                <LinkButton href="/dashboard/membership" className="w-full">
-                  <Package className="size-4" aria-hidden /> Manage membership
-                </LinkButton>
-              </>
             ) : (
               <>
-                <h2 className="font-semibold">Order this item</h2>
-                <OrderForm productId={product.id} maxQuantity={product.quantity} />
-                <div className="border-t border-stone-100 pt-4">
-                  <p className="mb-2 text-sm font-medium text-stone-700">Or contact the seller directly</p>
-                  <SellerContact productId={product.id} productTitle={product.title} />
-                </div>
+                <h2 className="font-semibold text-stone-950">Interested in this item?</h2>
+                <p className="text-sm leading-6 text-stone-600">Buying is free. Contact the seller directly on WhatsApp to confirm availability, agree on pickup and pay the seller. No buyer subscription or account is required.</p>
+                <SellerContact productId={product.id} productTitle={product.title} />
+                {user ? (
+                  <div className="border-t border-stone-100 pt-4">
+                    <p className="mb-2 text-sm font-medium text-stone-700">Or send an order request from your account</p>
+                    <OrderForm productId={product.id} maxQuantity={product.quantity} />
+                  </div>
+                ) : null}
               </>
             )}
           </Card>
