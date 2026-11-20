@@ -7,6 +7,7 @@ import { conditionLabel } from "@/components/product/product-card";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { SaveButton } from "@/components/product/save-button";
 import { SellerContact } from "@/components/product/seller-contact";
+import { ReportSeller } from "@/components/product/report-seller";
 import { Card } from "@/components/ui/card";
 import { Alert, Badge } from "@/components/ui/feedback";
 import { LinkButton } from "@/components/ui/button";
@@ -145,6 +146,8 @@ export default async function ProductPage({ params }: { params: Params }) {
             </>
           )}
         </Card>
+
+        {!isOwner && user ? <ReportSeller sellerId={product.seller_id} productId={product.id} /> : null}
 
         <p className="text-xs leading-relaxed text-stone-500">
           Safety tip: meet in a public place on campus, inspect the item before paying, and never send money in advance.
