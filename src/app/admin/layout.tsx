@@ -9,6 +9,7 @@ const items: NavItem[] = [
   { href: "/admin", label: "Overview", icon: "overview", exact: true },
   { href: "/admin/users", label: "Users", icon: "users" },
   { href: "/admin/sellers", label: "Seller applications", icon: "shield" },
+  { href: "/admin/reports", label: "Seller reports", icon: "mail" },
   { href: "/admin/products", label: "Products", icon: "boxes" },
   { href: "/admin/categories", label: "Categories", icon: "tags" },
   { href: "/admin/orders", label: "Orders", icon: "orders" },
