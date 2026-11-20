@@ -27,27 +27,16 @@ export default async function ApplyPage() {
       <PageHeader title="Become a seller" description="Tell us a little about what you plan to sell. Most applications are reviewed quickly." />
 
       {latest?.status === "pending" ? (
-        <Card className="space-y-2">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold">Application under review</h2>
-            <StatusBadge status="pending" />
-          </div>
-          <p className="text-sm text-stone-600">
-            You applied on {formatDate(latest.created_at)} as <strong>{latest.business_name}</strong>. We will notify you as soon as there is a decision.
-          </p>
+        <Card className="mb-5 space-y-2">
+          <div className="flex items-center gap-2"><h2 className="text-lg font-bold">Application under review</h2><StatusBadge status="pending" /></div>
+          <p className="text-sm text-stone-600">Your application is waiting for review. You can update your contact and business details below while it is pending.</p>
         </Card>
-      ) : (
-        <div className="space-y-5">
-          {latest?.status === "rejected" ? (
-            <Alert tone="error" title="Your last application was not approved">
-              {latest.admin_note ? `Reason: ${latest.admin_note}. ` : ""}You can apply again with more detail.
-            </Alert>
-          ) : null}
-          <Card>
-            <SellerApplicationForm defaultPhone={profile?.whatsapp ?? profile?.phone} defaultFullName={profile?.full_name} />
-          </Card>
-        </div>
-      )}
+      ) : latest?.status === "rejected" ? (
+        <Alert tone="error" title="Your last application was not approved">{latest.admin_note ? `Reason: ${latest.admin_note}. ` : ""}You can update your details and apply again.</Alert>
+      ) : null}
+      <Card>
+        <SellerApplicationForm defaultPhone={profile?.whatsapp ?? profile?.phone} defaultFullName={profile?.full_name} />
+      </Card>
     </>
   );
 }
