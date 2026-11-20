@@ -14,6 +14,7 @@ export type ProductSort = "newest" | "price_asc" | "price_desc";
 export interface ProductQuery {
   q?: string;
   categoryId?: string;
+  sellerId?: string;
   minPrice?: number;
   maxPrice?: number;
   condition?: ProductCondition;
@@ -41,6 +42,7 @@ export async function listProducts(query: ProductQuery = {}): Promise<{ products
   const q = sanitizeSearch(query.q);
   if (q) req = req.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
   if (query.categoryId && isUuid(query.categoryId)) req = req.eq("category_id", query.categoryId);
+  if (query.sellerId && isUuid(query.sellerId)) req = req.eq("seller_id", query.sellerId);
   if (query.minPrice !== undefined && Number.isFinite(query.minPrice)) req = req.gte("price", query.minPrice);
   if (query.maxPrice !== undefined && Number.isFinite(query.maxPrice)) req = req.lte("price", query.maxPrice);
   if (query.condition) req = req.eq("condition", query.condition);
