@@ -14,13 +14,10 @@ export const profileSchema = z.object({ full_name: z.string().trim().min(2, "Ent
 export const productSchema = z.object({ title: z.string().trim().min(3, "Title is too short").max(120, "Keep the title under 120 characters"), description: z.string().trim().min(10, "Describe the item in at least 10 characters").max(2000), price: z.coerce.number({ error: "Enter a price" }).positive("Price must be greater than 0").max(100_000_000), category_id: z.string().uuid("Choose a category"), condition: z.enum(PRODUCT_CONDITIONS.map((c) => c.value) as [string, ...string[]]), quantity: z.coerce.number().int("Whole numbers only").min(1, "At least 1").max(1000), location: optionalText(100) });
 export const sellerApplicationSchema = z.object({
   business_name: z.string().trim().min(2, "Enter a shop or business name").max(80),
-  description: z.string().trim().min(20, "Tell us a bit more (at least 20 characters)").max(1000),
+  description: z.string().trim().min(10, "Tell buyers what you plan to sell").max(1000),
   categories_text: optionalText(200),
   phone,
-  matric_number: z.string().trim().min(5, "Enter your ABSU matriculation number").max(30).regex(/^[A-Za-z0-9/\-]+$/, "Use only letters, numbers, slash or hyphen"),
-  faculty: z.string().trim().min(2, "Enter your faculty").max(100),
-  department: z.string().trim().min(2, "Enter your department").max(100),
-  level: z.enum(["100", "200", "300", "400", "500", "600", "Other"], { error: "Select your current level" }),
+  location: z.string().trim().min(2, "Enter your hostel, street or pickup area").max(120),
 });
 export const orderSchema = z.object({ product_id: z.string().uuid(), quantity: z.coerce.number().int().min(1, "At least 1").max(100), note: optionalText(300) });
 export const categorySchema = z.object({ name: z.string().trim().min(2, "Name is too short").max(50), slug: z.string().trim().toLowerCase().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and hyphens only"), description: optionalText(200), sort_order: z.coerce.number().int().min(0).max(1000).default(0) });
