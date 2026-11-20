@@ -7,7 +7,7 @@ import { Home, LayoutGrid, UserRound } from "lucide-react";
 const items = [
   { href: "/", label: "Home", icon: Home, matches: (path: string) => path === "/" },
   { href: "/marketplace", label: "Browse", icon: LayoutGrid, matches: (path: string) => path.startsWith("/marketplace") || path.startsWith("/category") || path.startsWith("/product") },
-  { href: "/login", label: "Account", icon: UserRound, matches: (path: string) => path.startsWith("/dashboard") || path.startsWith("/login") || path.startsWith("/register") },
+  { href: "/dashboard", label: "Account", icon: UserRound, matches: (path: string) => path.startsWith("/dashboard") || path.startsWith("/login") || path.startsWith("/register") },
 ];
 
 export function MobileBottomNav() {
