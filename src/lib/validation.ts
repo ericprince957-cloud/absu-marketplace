@@ -13,6 +13,7 @@ export const resetSchema = z.object({ password, confirm_password: z.string() }).
 export const profileSchema = z.object({ full_name: z.string().trim().min(2, "Enter your full name").max(80), username: z.string().trim().toLowerCase().regex(/^[a-z0-9_]{3,30}$/, "3-30 characters: letters, numbers and underscore").optional().or(z.literal("")), phone: phone.optional().or(z.literal("")), whatsapp: phone.optional().or(z.literal("")), faculty: optionalText(80), department: optionalText(80), level: optionalText(20), hostel: optionalText(80), bio: optionalText(300) });
 export const productSchema = z.object({ title: z.string().trim().min(3, "Title is too short").max(120, "Keep the title under 120 characters"), description: z.string().trim().min(10, "Describe the item in at least 10 characters").max(2000), price: z.coerce.number({ error: "Enter a price" }).positive("Price must be greater than 0").max(100_000_000), category_id: z.string().uuid("Choose a category"), condition: z.enum(PRODUCT_CONDITIONS.map((c) => c.value) as [string, ...string[]]), quantity: z.coerce.number().int("Whole numbers only").min(1, "At least 1").max(1000), location: optionalText(100) });
 export const sellerApplicationSchema = z.object({
+  full_name: z.string().trim().min(2, "Enter your full name").max(80),
   business_name: z.string().trim().min(2, "Enter a shop or business name").max(80),
   description: z.string().trim().min(10, "Tell buyers what you plan to sell").max(1000),
   categories_text: optionalText(200),
