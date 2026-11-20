@@ -30,15 +30,16 @@ npm run dev
 
 Scripts: `npm run typecheck` · `npm run lint` · `npm test` · `npm run build`
 
-## Membership rules
+## Seller access rules
 
-- Free lifetime slots are assigned by the database after email verification, in verification order.
+- The first 50 seller applications approved by an administrator receive lifetime-free seller access.
+- Buyers and ordinary account registrations never consume seller launch slots.
 - The allocation is atomic and capped at 50.
-- Free members are never charged.
-- Paid membership lasts 30 days per successful payment. Early renewals extend from the existing expiry.
-- Membership unlocks selling, placing orders and viewing seller contact details. Browsing is public.
-- Item purchases are arranged directly between buyer and seller; the platform does not process item-sale payments.
-- Returning from Paystack checkout does not grant access. The server verifies the transaction with Paystack first.
+- Approved sellers after the first 50 pay NGN 1,500 for 30 days of seller access.
+- Seller access controls creating and managing listings and uploading product photos.
+- Buyers can browse, search, contact sellers on WhatsApp and buy products for free. No buyer account or subscription is required for WhatsApp purchases.
+- Signed-in buyers can optionally submit order requests; these do not require seller access. Item payments are arranged directly between buyer and seller.
+- Returning from Paystack checkout does not grant seller access. The server verifies the transaction with Paystack first.
 
 ## Project structure
 
