@@ -53,8 +53,6 @@ html.dark input, html.dark textarea, html.dark select {
 }
 html.dark input::placeholder, html.dark textarea::placeholder { color: #858585; }
 html.dark .shadow-sm, html.dark .shadow-md { --tw-shadow-color: rgb(0 0 0 / 35%); }
-html.dark .hover\\:bg-stone-100:hover, html.dark .hover\\:bg-stone-50:hover { background-color: #242424; }
-html.dark .hover\\:bg-white:hover { background-color: #202020; }
 
 /* Keep older ABSU blue utility classes aligned with the Vector Codes black-and-gold identity. */
 .bg-indigo-50, .bg-indigo-100, .bg-blue-50, .bg-blue-100 { background-color: #f5f5f4 !important; }
