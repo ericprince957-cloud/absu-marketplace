@@ -28,7 +28,7 @@ export async function register(_prev: ActionState, formData: FormData): Promise<
     options: {
       // Copied into `profiles` by the database trigger (see docs/BACKEND_CONTRACT.md).
       data: { full_name, phone: phone || null },
-      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent("/dashboard?verified=1")}`,
+      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent("/login?verified=1")}`,
     },
   });
 
@@ -40,35 +40,7 @@ export async function register(_prev: ActionState, formData: FormData): Promise<
   }
 
   // Same response whether or not the email already exists (prevents account enumeration).
-  redirect(`/verify-email?email=${encodeURIComponent(email)}`);
-}
-
-export async function verifySignupOtp(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  const token = String(formData.get("token") ?? "").trim();
-
-  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
-    return fail("Enter the email address you registered with.", { email: ["Enter a valid email address."] });
-  }
-  if (!/^\\d{6}$/.test(token)) {
-    return fail("Enter the 6-digit code from your email.", { token: ["Enter a valid 6-digit code."] });
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
-
-  if (error) {
-    if (/expired|invalid|token/i.test(error.message)) {
-      return fail("That code is invalid or has expired. Request a new code and try again.");
-    }
-    if (/rate limit|too many/i.test(error.message)) {
-      return fail("Too many attempts. Please wait a few minutes before trying again.");
-    }
-    console.error("[auth] signup OTP verification failed:", error.message);
-    return fail("We could not verify that code. Please try again.");
-  }
-
-  redirect("/dashboard?verified=1");
+  redirect("/login?checkEmail=1");
 }
 
 export async function login(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -80,7 +52,7 @@ export async function login(_prev: ActionState, formData: FormData): Promise<Act
 
   if (error) {
     if (/not confirmed/i.test(error.message)) {
-      redirect(`/verify-email?email=${encodeURIComponent(parsed.data.email)}`);
+      return fail("Please confirm your email using the link we sent before logging in.");
     }
     return fail("Incorrect email or password.");
   }
@@ -98,26 +70,6 @@ export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/");
-}
-
-export async function resendVerification(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  const parsed = forgotSchema.safeParse({ email: formData.get("email") });
-  if (!parsed.success) return fail("Enter a valid email address.");
-
-  const supabase = await createClient();
-  const siteUrl = await getSiteUrl();
-  const { error } = await supabase.auth.resend({
-    type: "signup",
-    email: parsed.data.email,
-    options: { emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent("/dashboard?verified=1")}` },
-  });
-
-  if (error) {
-    if (/rate limit|too many|seconds/i.test(error.message)) return fail("Please wait a minute before requesting another code.");
-    console.error("[auth] resend failed:", error.message);
-    return fail("We could not send a new code. Please try again shortly.");
-  }
-  return success("A new verification code has been sent. Check your inbox and spam folder.");
 }
 
 export async function forgotPassword(_prev: ActionState, formData: FormData): Promise<ActionState> {
