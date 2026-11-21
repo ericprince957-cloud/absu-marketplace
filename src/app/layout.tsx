@@ -7,6 +7,7 @@ import { CookieConsent } from "@/components/layout/cookie-consent";
 import { PwaRegister } from "@/components/layout/pwa-register";
 import { PwaInstallPrompt } from "@/components/layout/pwa-install-prompt";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const siteUrl = new URL(siteConfig.url).origin;
 
@@ -90,6 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <PwaRegister />
         <PwaInstallPrompt />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
