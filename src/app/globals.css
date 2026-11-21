@@ -122,6 +122,7 @@ html.dark .text-stone-700 { color: #d4d4d4; }
 html.dark .text-stone-600 { color: #b3b3b3; }
 html.dark .text-stone-500 { color: #929292; }
 html.dark .text-brand-700, html.dark .text-brand-800 { color: #e5c65e; }
+html.dark [class*="ring-stone-200"] { --tw-ring-color: #2a2a2a; }
 html.dark .border-stone-100 { border-color: #222222; }
 html.dark .border-stone-200 { border-color: #2a2a2a; }
 html.dark .border-stone-300 { border-color: #3a3a3a; }
