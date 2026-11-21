@@ -59,10 +59,25 @@ export async function updateOrderStatus(formData: FormData): Promise<void> {
   revalidatePath("/seller/sales");
 }
 
+export async function markNotificationRead(notificationId: string): Promise<void> {
+  const user = await requireUser("/dashboard/notifications");
+  if (!/^[0-9a-f-]{36}$/i.test(notificationId)) return;
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("notifications")
+    .update({ is_read: true })
+    .eq("id", notificationId)
+    .eq("user_id", user.id);
+  if (error) console.error("[actions] markNotificationRead failed:", error.message);
+  revalidatePath("/dashboard/notifications");
+  revalidatePath("/dashboard", "layout");
+}
+
 export async function markNotificationsRead(): Promise<void> {
   const user = await requireUser("/dashboard/notifications");
   const supabase = await createClient();
   const { error } = await supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
   if (error) console.error("[actions] markNotificationsRead failed:", error.message);
   revalidatePath("/dashboard", "layout");
+  revalidatePath("/dashboard/notifications");
 }
