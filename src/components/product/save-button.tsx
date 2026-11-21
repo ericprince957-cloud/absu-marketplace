@@ -21,14 +21,14 @@ export function SaveButton({
   const [, startTransition] = useTransition();
 
   const base = cn(
-    "grid size-10 place-items-center rounded-full bg-white/95 shadow ring-1 ring-stone-200 transition hover:scale-105",
+    "grid size-8 place-items-center rounded-full bg-white/95 shadow ring-1 ring-stone-200 transition hover:scale-105",
     className,
   );
 
   if (!signedIn) {
     return (
       <Link href={`/login?next=${encodeURIComponent(`/product/${productId}`)}`} aria-label="Log in to save this product" className={base}>
-        <Heart className="size-5 text-stone-600" aria-hidden />
+        <Heart className="size-4 text-stone-600" aria-hidden />
       </Link>
     );
   }
@@ -46,7 +46,7 @@ export function SaveButton({
         })
       }
     >
-      <Heart className={cn("size-5", optimistic ? "fill-red-500 text-red-500" : "text-stone-600")} aria-hidden />
+      <Heart className={cn("size-4", optimistic ? "fill-red-500 text-red-500" : "text-stone-600")} aria-hidden />
     </button>
   );
 }

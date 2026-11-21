@@ -20,9 +20,9 @@ export function SearchBox({ id, className, defaultValue }: { id: string; classNa
       <button
         type="submit"
         aria-label="Search"
-        className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-brand-900 text-white transition active:scale-95"
+        className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-brand-900 text-white transition active:scale-95"
       >
-        <Search className="size-[18px]" aria-hidden />
+        <Search className="size-4" aria-hidden />
       </button>
     </form>
   );

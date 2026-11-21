@@ -45,8 +45,8 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
           ) : null}
           <div className="mt-auto flex items-end justify-between gap-2 pt-2">
             <p className="font-sans text-[17px] font-bold leading-none text-brand-900">{formatNaira(product.price)}</p>
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-900 text-white transition group-hover:bg-brand-700">
-              <ArrowRight className="size-4" aria-hidden />
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-900 text-white transition group-hover:bg-brand-700">
+              <ArrowRight className="size-3.5" aria-hidden />
             </span>
           </div>
         </div>

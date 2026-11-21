@@ -11,20 +11,20 @@ export function CategoryCircles({ categories }: { categories: Category[] }) {
       {categories.map((c) => {
         const { Icon, bg, fg } = categoryVisual(c.name, c.slug);
         return (
-          <li key={c.id} className="w-[76px] sm:w-24">
+          <li key={c.id} className="w-[68px] sm:w-24">
             <Link href={`/category/${c.slug}`} className="group flex flex-col items-center gap-2 text-center">
-              <span className={cn("grid size-16 place-items-center rounded-full shadow-sm ring-4 ring-white transition group-active:scale-95 sm:size-[72px]", bg, fg)}>
-                <Icon className="size-7" aria-hidden />
+              <span className={cn("grid size-14 place-items-center rounded-full shadow-sm ring-2 ring-white transition group-active:scale-95 sm:size-[72px]", bg, fg)}>
+                <Icon className="size-6 sm:size-7" aria-hidden />
               </span>
               <span className="line-clamp-2 text-xs font-medium leading-tight text-stone-800">{c.name}</span>
             </Link>
           </li>
         );
       })}
-      <li className="w-[76px] sm:w-24">
+      <li className="w-[68px] sm:w-24">
         <Link href="/marketplace" className="group flex flex-col items-center gap-2 text-center">
-          <span className="grid size-16 place-items-center rounded-full bg-white text-brand-900 shadow-sm ring-4 ring-white transition group-active:scale-95 sm:size-[72px]">
-            <LayoutGrid className="size-6" aria-hidden />
+          <span className="grid size-14 place-items-center rounded-full bg-white text-brand-900 shadow-sm ring-2 ring-white transition group-active:scale-95 sm:size-[72px]">
+            <LayoutGrid className="size-5 sm:size-6" aria-hidden />
           </span>
           <span className="text-xs font-medium text-stone-800">View all</span>
         </Link>

@@ -53,11 +53,11 @@ export function BottomNav({ signedIn }: { signedIn: boolean }) {
                 )}
               >
                 {isSell ? (
-                  <span className="-mt-5 grid size-12 place-items-center rounded-full bg-brand-900 text-white shadow-lg ring-4 ring-white">
-                    <Icon className="size-6" aria-hidden />
+                  <span className="-mt-4 grid size-11 place-items-center rounded-full bg-brand-900 text-white shadow-lg ring-4 ring-white">
+                    <Icon className="size-5" aria-hidden />
                   </span>
                 ) : (
-                  <Icon className={cn("size-[22px]", active && "fill-brand-900/10")} aria-hidden />
+                  <Icon className={cn("size-5", active && "fill-brand-900/10")} aria-hidden />
                 )}
                 <span className={cn(isSell && "-mt-0.5")}>{label}</span>
               </Link>

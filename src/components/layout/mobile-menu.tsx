@@ -44,9 +44,9 @@ export function MobileMenu({ links, categories, signedIn }: Props) {
         aria-expanded={open}
         aria-controls="mobile-drawer"
         aria-label="Open menu"
-        className="grid size-11 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 shadow-sm transition active:scale-95"
+        className="grid size-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 shadow-sm transition active:scale-95"
       >
-        <Menu className="size-5" aria-hidden />
+        <Menu className="size-[18px]" aria-hidden />
       </button>
 
       <div className={cn("fixed inset-0 z-[70] transition", open ? "visible" : "invisible delay-200")} aria-hidden={!open}>
