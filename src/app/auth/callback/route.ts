@@ -3,16 +3,13 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { safeNextPath } from "@/lib/utils";
 
-/**
- * Landing route for links in Supabase emails (email verification, password reset).
- * Supports both the PKCE `code` flow and the `token_hash` flow.
- */
+/** Confirms Supabase email links and sends new users to the website login page. */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = safeNextPath(searchParams.get("next"), "/dashboard");
+  const next = safeNextPath(searchParams.get("next"), "/login");
 
   const supabase = await createClient();
   let ok = false;
@@ -25,6 +22,15 @@ export async function GET(request: NextRequest) {
     ok = !error;
   }
 
-  const target = ok ? next : "/login?error=link";
-  return NextResponse.redirect(new URL(target, request.nextUrl.origin));
+  if (!ok) {
+    return NextResponse.redirect(new URL("/login?error=link", request.nextUrl.origin));
+  }
+
+  // Email confirmation should verify the account but leave the student at login.
+  // Password recovery must keep its temporary session for the reset-password page.
+  if (next !== "/reset-password") {
+    await supabase.auth.signOut();
+  }
+
+  return NextResponse.redirect(new URL(next, request.nextUrl.origin));
 }
