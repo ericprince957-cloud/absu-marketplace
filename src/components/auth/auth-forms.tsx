@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { forgotPassword, login, register, resetPassword } from "@/app/(auth)/actions";
 import { initialState } from "@/lib/action-state";
 import { TextField } from "@/components/ui/field";
+import { PasswordField } from "@/components/ui/password-field";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FormMessage } from "@/components/ui/form-message";
 
@@ -15,7 +16,7 @@ export function LoginForm({ next }: { next?: string }) {
       <input type="hidden" name="next" value={next ?? ""} />
       <FormMessage state={state} />
       <TextField label="Email" name="email" type="email" autoComplete="email" required error={state.fieldErrors?.email} />
-      <TextField label="Password" name="password" type="password" autoComplete="current-password" required error={state.fieldErrors?.password} />
+      <PasswordField label="Password" name="password" autoComplete="current-password" required error={state.fieldErrors?.password} />
       <div className="text-right">
         <Link href="/forgot-password" className="text-sm font-medium text-brand-700 hover:underline">
           Forgot password?
@@ -37,8 +38,8 @@ export function RegisterForm() {
       <TextField label="Full name" name="full_name" autoComplete="name" required error={fe?.full_name} />
       <TextField label="Email" name="email" type="email" autoComplete="email" required error={fe?.email} hint="We will send an email confirmation link here." />
       <TextField label="Phone / WhatsApp (optional)" name="phone" type="tel" autoComplete="tel" placeholder="08012345678" error={fe?.phone} />
-      <TextField label="Password" name="password" type="password" autoComplete="new-password" required error={fe?.password} hint="At least 8 characters with a letter and a number." />
-      <TextField label="Confirm password" name="confirm_password" type="password" autoComplete="new-password" required error={fe?.confirm_password} />
+      <PasswordField label="Password" name="password" autoComplete="new-password" required error={fe?.password} hint="At least 8 characters with a letter and a number." />
+      <PasswordField label="Confirm password" name="confirm_password" autoComplete="new-password" required error={fe?.confirm_password} />
       <SubmitButton size="lg" className="w-full" pendingText="Creating account...">
         Create account
       </SubmitButton>
@@ -68,8 +69,8 @@ export function ResetPasswordForm() {
   return (
     <form action={action} className="space-y-4" noValidate>
       <FormMessage state={state} />
-      <TextField label="New password" name="password" type="password" autoComplete="new-password" required error={fe?.password} hint="At least 8 characters with a letter and a number." />
-      <TextField label="Confirm new password" name="confirm_password" type="password" autoComplete="new-password" required error={fe?.confirm_password} />
+      <PasswordField label="New password" name="password" autoComplete="new-password" required error={fe?.password} hint="At least 8 characters with a letter and a number." />
+      <PasswordField label="Confirm new password" name="confirm_password" autoComplete="new-password" required error={fe?.confirm_password} />
       <SubmitButton size="lg" className="w-full" pendingText="Saving...">
         Update password
       </SubmitButton>
