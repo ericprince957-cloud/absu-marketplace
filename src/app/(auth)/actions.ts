@@ -55,7 +55,7 @@ export async function verifySignupOtp(_prev: ActionState, formData: FormData): P
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({ email, token, type: "signup" });
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
 
   if (error) {
     if (/expired|invalid|token/i.test(error.message)) {
