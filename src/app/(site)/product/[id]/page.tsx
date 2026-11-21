@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   const cover = publicImageUrl(product.product_images?.[0]?.path);
 
   return (
-    <div className="space-y-8 pb-6">
+    <div className="space-y-8 pb-24 lg:pb-6">
       <RecentlyViewed current={{ id: product.id, title: product.title, price: product.price, image: cover }} show={false} />
       <div className="grid gap-7 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
         <div className="min-w-0">
@@ -115,7 +115,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             {seller ? <Link href={`/store/${seller.id}`} className="inline-flex min-h-10 items-center gap-2 text-xs font-bold text-stone-800 hover:text-brand-700"><Store className="size-4" /> Visit seller storefront <ArrowUpRight className="size-3.5" /></Link> : null}
           </Card>
 
-          <Card className="space-y-4 p-4 sm:p-5">
+          <Card id="order" className="scroll-mt-20 space-y-4 p-4 sm:p-5">
             {isOwner ? (
               <>
                 <p className="text-sm text-stone-700">This is your listing.</p>
@@ -145,6 +145,19 @@ export default async function ProductPage({ params }: { params: Params }) {
           </p>
         </div>
       </div>
+      {isLive && !isOwner ? (
+        <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-white/95 px-4 pt-3 backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-2xl items-center gap-3 pb-3">
+            <div className="min-w-0">
+              <p className="text-xs text-stone-500">Price</p>
+              <p className="truncate font-sans text-xl font-bold leading-none text-brand-900">{formatNaira(product.price)}</p>
+            </div>
+            <a href="#order" className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-brand-900 px-6 font-semibold text-white transition active:scale-[0.98] active:bg-brand-950">
+              Contact seller
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -10,6 +10,7 @@ export async function StudentListingsSlider() {
   const [{ products }, user] = await Promise.all([listProducts({ pageSize: 24 }), getUser()]);
   const shuffled = [...products];
   for (let i = shuffled.length - 1; i > 0; i--) {
+    // eslint-disable-next-line react-hooks/purity
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }

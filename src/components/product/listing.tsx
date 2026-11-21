@@ -1,4 +1,5 @@
 import { PackageSearch } from "lucide-react";
+import { CategoryChips } from "@/components/product/category-nav";
 import { ProductFilters, type FilterValues } from "@/components/product/product-filters";
 import { ProductGrid } from "@/components/product/product-grid";
 import { EmptyState } from "@/components/ui/feedback";
@@ -64,7 +65,8 @@ export async function Listing({
   const hasFilters = Boolean(values.q || values.category || values.min || values.max || values.condition);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
+      <CategoryChips categories={categories} activeId={lockedCategoryId ?? values.category} />
       <ProductFilters action={basePath} categories={categories} values={values} lockedCategory={Boolean(lockedCategoryId)} />
 
       <p className="text-sm text-stone-600" aria-live="polite">

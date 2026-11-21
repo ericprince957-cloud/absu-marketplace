@@ -32,6 +32,7 @@ export function RecentlyViewed({
         : [];
       const next = current ? [current, ...valid.filter((item) => item.id !== current.id)].slice(0, 8) : valid.slice(0, 8);
       if (current) localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setItems(next);
     } catch {
       setItems(current ? [current] : []);

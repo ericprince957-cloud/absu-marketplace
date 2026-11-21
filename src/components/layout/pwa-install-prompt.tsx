@@ -13,6 +13,7 @@ export function PwaInstallPrompt() {
 
   useEffect(() => {
     const standalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInstalled(standalone);
     setIos(/iphone|ipad|ipod/i.test(navigator.userAgent) && !standalone);
     const onPrompt = (event: Event) => {

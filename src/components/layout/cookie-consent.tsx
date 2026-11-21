@@ -26,6 +26,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     const existing = readConsent();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (existing) { setAnalytics(existing.analytics); return; }
     setVisible(true);
   }, []);
