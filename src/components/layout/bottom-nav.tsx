@@ -47,7 +47,7 @@ export function BottomNav({ signedIn }: { signedIn: boolean }) {
             aria-current={onHome ? "page" : undefined}
             className={cn(
               "grid size-[52px] place-items-center rounded-full bg-brand-900 text-white shadow-md transition active:scale-95",
-              onHome && "ring-2 ring-gold-400 ring-offset-2 ring-offset-white",
+              onHome && "ring-[3px] ring-gold-400",
             )}
           >
             <ShoppingBag className="size-[22px]" aria-hidden />
