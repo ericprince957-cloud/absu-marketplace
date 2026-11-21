@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { markNotificationRead } from "@/app/dashboard/actions";
@@ -9,6 +10,7 @@ import { cn, formatDateTime } from "@/lib/utils";
 import type { Notification } from "@/types";
 
 export function NotificationItem({ notification }: { notification: Notification }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isRead, setIsRead] = useState(notification.is_read);
   const [isPending, startTransition] = useTransition();
@@ -20,6 +22,8 @@ export function NotificationItem({ notification }: { notification: Notification 
       startTransition(async () => {
         await markNotificationRead(notification.id);
         setIsRead(true);
+        // Refresh the shared server-rendered navigation badges as well as this item.
+        router.refresh();
       });
     }
   }
