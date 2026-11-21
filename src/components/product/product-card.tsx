@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ImageOff, MapPin } from "lucide-react";
+import { ArrowRight, ImageOff, MapPin } from "lucide-react";
 import { SaveButton } from "@/components/product/save-button";
-import { Badge } from "@/components/ui/feedback";
 import { PRODUCT_CONDITIONS } from "@/config/site";
 import { formatNaira, publicImageUrl } from "@/lib/utils";
 import type { Product } from "@/types";
@@ -15,16 +14,19 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
   const cover = publicImageUrl(product.product_images?.[0]?.path);
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition hover:shadow-md">
-      <Link href={`/product/${product.id}`} className="block">
-        <div className="relative aspect-[4/3] bg-stone-100">
+    <article className="relative h-full">
+      <Link
+        href={`/product/${product.id}`}
+        className="group flex h-full flex-col rounded-2xl bg-white p-2 shadow-sm ring-1 ring-stone-200 transition active:scale-[0.985] sm:hover:shadow-md"
+      >
+        <div className="relative aspect-square overflow-hidden rounded-xl bg-stone-100">
           {cover ? (
             <Image
               src={cover}
               alt={product.title}
               fill
-              sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
-              className="object-cover transition duration-300 group-hover:scale-[1.03]"
+              sizes="(min-width:1024px) 22vw, (min-width:640px) 30vw, 46vw"
+              className="object-cover transition duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="grid h-full place-items-center text-stone-300">
@@ -32,21 +34,29 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
             </div>
           )}
         </div>
-        <div className="space-y-1.5 p-3.5 sm:p-4">
-          <p className="font-display text-lg font-bold text-brand-800">{formatNaira(product.price)}</p>
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-snug text-stone-900">{product.title}</h3>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-0.5">
-            <Badge>{conditionLabel(product.condition)}</Badge>
-            {product.location ? (
-              <span className="inline-flex items-center gap-1 text-xs text-stone-500">
-                <MapPin className="size-3" aria-hidden />
-                {product.location}
-              </span>
-            ) : null}
+
+        <div className="flex flex-1 flex-col px-1.5 pb-1 pt-2.5">
+          <h3 className="line-clamp-2 min-h-[2.5rem] font-sans text-[13.5px] font-medium leading-snug text-stone-900">{product.title}</h3>
+          {product.location ? (
+            <p className="mt-1 inline-flex items-center gap-1 truncate text-[11px] text-stone-500">
+              <MapPin className="size-3 shrink-0" aria-hidden />
+              <span className="truncate">{product.location}</span>
+            </p>
+          ) : null}
+          <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+            <p className="font-sans text-[17px] font-bold leading-none text-brand-900">{formatNaira(product.price)}</p>
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-900 text-white transition group-hover:bg-brand-700">
+              <ArrowRight className="size-4" aria-hidden />
+            </span>
           </div>
         </div>
       </Link>
-      <div className="absolute right-2.5 top-2.5">
+
+      {/* Condition pill, like the discount tag in the reference */}
+      <span className="pointer-events-none absolute left-3.5 top-3.5 rounded-md bg-white/95 px-2 py-1 text-[10.5px] font-semibold text-brand-900 shadow-sm ring-1 ring-stone-200">
+        {conditionLabel(product.condition)}
+      </span>
+      <div className="absolute right-3.5 top-3.5">
         <SaveButton productId={product.id} saved={saved} signedIn={signedIn} />
       </div>
     </article>

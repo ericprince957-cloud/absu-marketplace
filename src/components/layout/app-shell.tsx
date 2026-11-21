@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { LogOut } from "lucide-react";
+import { BottomNav } from "@/components/layout/bottom-nav";
+import { ConfigNotice } from "@/components/layout/config-notice";
 import { Logo } from "@/components/layout/logo";
 import { SidebarNav, type NavItem } from "@/components/layout/sidebar-nav";
-import { ConfigNotice } from "@/components/layout/config-notice";
 import { logout } from "@/app/(auth)/actions";
-import { LogOut } from "lucide-react";
 
-/** Shared frame for the student, seller and admin areas. */
+/** Shared frame for the student, seller and admin areas. Always signed-in. */
 export function AppShell({
   area,
   items,
@@ -19,35 +20,49 @@ export function AppShell({
   switchLinks?: { href: string; label: string }[];
 }) {
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-cream pb-tabbar">
       <ConfigNotice />
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
+      <header className="sticky top-0 z-40 border-b border-stone-200 bg-cream/95 backdrop-blur">
+        <div className="mx-auto flex h-[60px] max-w-6xl items-center gap-3 px-4 sm:px-6">
           <Logo />
-          <span className="hidden rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-800 sm:inline">{area}</span>
-          <div className="ml-auto flex items-center gap-1 sm:gap-2">
-            {switchLinks?.map((l) => (
-              <Link key={l.href} href={l.href} className="rounded-lg px-2.5 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100">
-                {l.label}
-              </Link>
-            ))}
+          <span className="hidden rounded-full bg-brand-900 px-3 py-1 text-xs font-semibold text-white sm:inline">{area}</span>
+          <div className="ml-auto flex items-center gap-1">
+            <div className="hidden items-center gap-1 sm:flex">
+              {switchLinks?.map((l) => (
+                <Link key={l.href} href={l.href} className="rounded-lg px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-200/60">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
             <form action={logout}>
-              <button type="submit" className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-stone-700 hover:bg-stone-100">
-                <LogOut className="size-4" aria-hidden />
+              <button type="submit" aria-label="Log out" className="inline-flex h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-stone-700 active:bg-stone-200 sm:hover:bg-stone-200/60">
+                <LogOut className="size-[18px]" aria-hidden />
                 <span className="hidden sm:inline">Log out</span>
               </button>
             </form>
           </div>
         </div>
       </header>
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 md:grid-cols-[220px_1fr] md:gap-8 md:py-10">
-        <aside className="md:sticky md:top-6 md:self-start">
+
+      <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6 md:grid md:grid-cols-[230px_1fr] md:gap-8 md:py-8">
+        <aside className="md:sticky md:top-24 md:self-start">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-stone-500 sm:hidden">{area}</p>
           <SidebarNav items={items} />
+          {switchLinks?.length ? (
+            <div className="snap-row mt-2 gap-2 sm:hidden">
+              {switchLinks.map((l) => (
+                <Link key={l.href} href={l.href} className="rounded-full bg-brand-50 px-3.5 py-2 text-xs font-semibold text-brand-900 ring-1 ring-brand-200 active:bg-brand-100">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          ) : null}
         </aside>
-        <main id="main" className="min-w-0">
+        <main id="main" className="min-w-0 pt-5 md:pt-0">
           {children}
         </main>
       </div>
+      <BottomNav signedIn />
     </div>
   );
 }

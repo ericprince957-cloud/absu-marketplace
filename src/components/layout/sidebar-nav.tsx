@@ -59,7 +59,7 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
   const activeHref = items.filter(matches).sort((a, b) => b.href.length - a.href.length)[0]?.href;
 
   return (
-    <nav aria-label="Section" className="flex gap-1 overflow-x-auto pb-2 md:flex-col md:overflow-visible md:pb-0">
+    <nav aria-label="Section" className="snap-row gap-2 pb-1 md:flex-col md:gap-1 md:overflow-visible md:pb-0">
       {items.map((item) => {
         const Icon = icons[item.icon] ?? LayoutDashboard;
         const active = item.href === activeHref;
@@ -69,8 +69,10 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors",
-              active ? "bg-brand-700 text-white" : "text-stone-700 hover:bg-stone-100",
+              "flex min-h-11 shrink-0 items-center gap-2.5 rounded-full px-4 text-sm font-medium transition active:scale-95 md:rounded-xl",
+              active
+                ? "bg-brand-900 text-white"
+                : "bg-white text-stone-700 ring-1 ring-stone-200 md:bg-transparent md:ring-0 md:hover:bg-stone-200/60",
             )}
           >
             <Icon className="size-4" aria-hidden />

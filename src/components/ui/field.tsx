@@ -2,8 +2,8 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const controlStyles =
-  "block w-full rounded-xl border border-stone-300 bg-white px-3.5 text-[15px] text-stone-900 shadow-sm " +
-  "placeholder:text-stone-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20 " +
+  "block w-full rounded-xl border border-stone-300 bg-white px-3.5 text-base text-stone-900 shadow-sm " +
+  "placeholder:text-stone-400 focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/20 " +
   "disabled:bg-stone-100 aria-[invalid=true]:border-red-500 aria-[invalid=true]:ring-red-500/20";
 
 interface FieldShellProps {
@@ -119,4 +119,4 @@ export function SelectField({
 }
 
 /** Compact inputs for filter bars (no label wrapper). */
-export const filterControl = cn(controlStyles, "h-10 text-sm");
+export const filterControl = cn(controlStyles, "h-11");

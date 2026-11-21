@@ -16,9 +16,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1b6246",
+  themeColor: "#0f3427",
   width: "device-width",
   initialScale: 1,
+  // Lets the layout extend under phone notches; safe-area padding is applied where needed.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

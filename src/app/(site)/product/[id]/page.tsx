@@ -43,7 +43,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     .filter((i): i is { id: string; url: string } => Boolean(i.url));
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
+    <div className="grid gap-6 pb-24 sm:gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-12 lg:pb-0">
       <div className="min-w-0">
         <nav aria-label="Breadcrumb" className="mb-4 text-sm text-stone-500">
           <Link href="/marketplace" className="hover:text-brand-700">Marketplace</Link>
@@ -71,10 +71,10 @@ export default async function ProductPage({ params }: { params: Params }) {
 
         <div>
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-2xl font-bold leading-tight sm:text-3xl">{product.title}</h1>
+            <h1 className="text-2xl font-semibold leading-tight sm:text-3xl">{product.title}</h1>
             <SaveButton productId={product.id} saved={saved} signedIn={Boolean(user)} className="shrink-0 border border-stone-200" />
           </div>
-          <p className="mt-3 font-display text-3xl font-extrabold text-brand-800">{formatNaira(product.price)}</p>
+          <p className="mt-3 font-sans text-3xl font-bold text-brand-900">{formatNaira(product.price)}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <Badge tone="green">{conditionLabel(product.condition)}</Badge>
             <Badge tone={product.quantity > 0 ? "neutral" : "red"}>
@@ -105,7 +105,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           {seller?.bio ? <p className="text-sm text-stone-600">{seller.bio}</p> : null}
         </Card>
 
-        <Card className="space-y-4 p-4 sm:p-5">
+        <Card id="order" className="scroll-mt-20 space-y-4 p-4 sm:p-5">
           {isOwner ? (
             <>
               <p className="text-sm text-stone-700">This is your listing.</p>
@@ -150,6 +150,19 @@ export default async function ProductPage({ params }: { params: Params }) {
           Safety tip: meet in a public place on campus, inspect the item before paying, and never send money in advance.
         </p>
       </div>
+      {isLive && !isOwner ? (
+        <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-white/95 px-4 pt-3 backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-2xl items-center gap-3 pb-3">
+            <div className="min-w-0">
+              <p className="text-xs text-stone-500">Price</p>
+              <p className="truncate font-sans text-xl font-bold leading-none text-brand-900">{formatNaira(product.price)}</p>
+            </div>
+            <a href="#order" className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-brand-900 px-6 font-semibold text-white transition active:scale-[0.98] active:bg-brand-950">
+              {user ? (membership?.hasAccess ? "Order now" : "Get membership") : "Log in to order"}
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
