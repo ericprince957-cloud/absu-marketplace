@@ -30,13 +30,13 @@ begin
 
   select coalesce((select (value#>>'{}')::integer from public.app_settings
                    where key='free_slot_limit'),50) into lim;
-  select slot_no into next_slot
-  from generate_series(1,lim) as slot_no
+  select slots.slot_no into next_slot
+  from generate_series(1,lim) as slots(slot_no)
   where not exists (
     select 1 from public.membership_entitlements e
-    where e.kind='free_lifetime' and e.free_slot_number=slot_no and e.status='active'
+    where e.kind='free_lifetime' and e.free_slot_number=slots.slot_no and e.status='active'
   )
-  order by slot_no limit 1;
+  order by slots.slot_no limit 1;
 
   if next_slot is null then return false; end if;
   insert into public.membership_entitlements(user_id,kind,status,free_slot_number,paid_until)
@@ -46,6 +46,21 @@ begin
     paid_until=null,updated_at=now();
   return true;
 end
+$function$;
+
+create or replace function public.get_free_slots_remaining()
+returns integer
+language sql
+stable
+security definer
+set search_path to ''
+as $function$
+  select greatest(
+    0,
+    coalesce((select (value#>>'{}')::integer from public.app_settings where key='free_slot_limit'),50)
+    - (select count(*)::integer from public.membership_entitlements e
+       where e.kind='free_lifetime' and e.status='active' and e.free_slot_number is not null)
+  )
 $function$;
 
 create or replace function public.create_pending_payment(p_reference text, p_amount_kobo integer)
