@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Search } from "lucide-react";
-import { extendMembership, setUserSuspended } from "@/app/admin/actions";
+import { grantFreeSlot, setUserSuspended } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { PageHeader, TableWrap, Td, Th } from "@/components/ui/card";
@@ -28,7 +29,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   const supabase = await createClient();
   let req = supabase
     .from("profiles")
-    .select("*, user_roles(role), membership_entitlements(kind,status,paid_until,free_slot_number)", { count: "exact" })
+    .select("*, user_roles(role), membership_entitlements(kind,status,paid_until,free_slot_number), seller_applications(status)", { count: "exact" })
     .order("created_at", { ascending: false });
   if (q) req = req.or(`full_name.ilike.%${q}%,email.ilike.%${q}%,phone.ilike.%${q}%`);
   const { data, count, error } = await req.range((page - 1) * SIZE, page * SIZE - 1);
@@ -37,7 +38,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
 
   return (
     <>
-      <PageHeader title="Users" description="Search students, suspend accounts and grant membership time." />
+      <PageHeader title="Users" description="Search users, review seller eligibility and manage free seller access." />
       <form method="get" role="search" className="mb-5 flex max-w-md gap-2">
         <label htmlFor="uq" className="sr-only">Search users</label>
         <div className="relative flex-1">
@@ -63,7 +64,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             </thead>
             <tbody>
               {rows.map((u) => {
-                const m = Array.isArray(u.membership_entitlements) ? u.membership_entitlements[0] : u.membership_entitlements;
+                const m = Array.isArray(u.membership_entitlements) ? u.membership_entitlements[0] : u.membership_entitlements;\n                const isSeller = (u.user_roles ?? []).some((r) => r.role === "seller");\n                const hasPendingApplication = (u.seller_applications ?? []).some((a) => a.status === "pending");
                 return (
                   <tr key={u.id}>
                     <Td>
@@ -93,12 +94,14 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                             {u.is_suspended ? "Reinstate" : "Suspend"}
                           </ConfirmButton>
                         </form>
-                        {m?.kind !== "free_lifetime" ? (
-                          <form action={extendMembership}>
+                        {!m && isSeller ? (
+                          <form action={grantFreeSlot}>
                             <input type="hidden" name="user_id" value={u.id} />
-                            <input type="hidden" name="days" value="30" />
-                            <ConfirmButton variant="outline" message="Grant 30 days of membership to this user?">+30 days</ConfirmButton>
+                            <ConfirmButton variant="outline" message="Grant this approved seller one of the remaining lifetime-free slots?">Give free slot</ConfirmButton>
                           </form>
+                        ) : null}
+                        {hasPendingApplication ? (
+                          <Link href="/admin/sellers" className="inline-flex items-center rounded-md border border-stone-300 px-3 py-1.5 text-xs font-medium hover:bg-stone-50">Review application</Link>
                         ) : null}
                       </div>
                     </Td>
