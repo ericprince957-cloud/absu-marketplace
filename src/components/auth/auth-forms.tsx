@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { forgotPassword, login, register, resendVerification, resetPassword, verifySignupOtp } from "@/app/(auth)/actions";
+import { forgotPassword, login, register, resetPassword } from "@/app/(auth)/actions";
 import { initialState } from "@/lib/action-state";
 import { TextField } from "@/components/ui/field";
 import { SubmitButton } from "@/components/ui/submit-button";
@@ -35,7 +35,7 @@ export function RegisterForm() {
     <form action={action} className="space-y-4" noValidate>
       <FormMessage state={state} />
       <TextField label="Full name" name="full_name" autoComplete="name" required error={fe?.full_name} />
-      <TextField label="Email" name="email" type="email" autoComplete="email" required error={fe?.email} hint="We will send a 6-digit verification code here." />
+      <TextField label="Email" name="email" type="email" autoComplete="email" required error={fe?.email} hint="We will send an email confirmation link here." />
       <TextField label="Phone / WhatsApp (optional)" name="phone" type="tel" autoComplete="tel" placeholder="08012345678" error={fe?.phone} />
       <TextField label="Password" name="password" type="password" autoComplete="new-password" required error={fe?.password} hint="At least 8 characters with a letter and a number." />
       <TextField label="Confirm password" name="confirm_password" type="password" autoComplete="new-password" required error={fe?.confirm_password} />
@@ -45,33 +45,6 @@ export function RegisterForm() {
       <p className="text-center text-xs text-stone-500">
         By creating an account you agree to use the marketplace honestly and respect other students.
       </p>
-    </form>
-  );
-}
-
-export function VerifySignupOtpForm({ email }: { email: string }) {
-  const [state, action] = useActionState(verifySignupOtp, initialState);
-  return (
-    <form action={action} className="space-y-4" noValidate>
-      <input type="hidden" name="email" value={email} />
-      <FormMessage state={state} />
-      <TextField
-        label="6-digit verification code"
-        name="token"
-        type="text"
-        inputMode="numeric"
-        autoComplete="one-time-code"
-        pattern="[0-9]{6}"
-        maxLength={6}
-        minLength={6}
-        placeholder="000000"
-        required
-        error={state.fieldErrors?.token}
-        className="text-center text-xl font-semibold tracking-[0.35em]"
-      />
-      <SubmitButton size="lg" className="w-full" pendingText="Verifying...">
-        Verify email
-      </SubmitButton>
     </form>
   );
 }
@@ -99,19 +72,6 @@ export function ResetPasswordForm() {
       <TextField label="Confirm new password" name="confirm_password" type="password" autoComplete="new-password" required error={fe?.confirm_password} />
       <SubmitButton size="lg" className="w-full" pendingText="Saving...">
         Update password
-      </SubmitButton>
-    </form>
-  );
-}
-
-export function ResendVerificationForm({ email }: { email: string }) {
-  const [state, action] = useActionState(resendVerification, initialState);
-  return (
-    <form action={action} className="space-y-3">
-      <input type="hidden" name="email" value={email} />
-      <FormMessage state={state} />
-      <SubmitButton variant="outline" className="w-full" pendingText="Sending...">
-        Resend verification code
       </SubmitButton>
     </form>
   );
