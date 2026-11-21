@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ChevronRight, LogOut, Menu, X } from "lucide-react";
 import { logout } from "@/app/(auth)/actions";
 import { Logo } from "@/components/layout/logo";
+import { CountBadge } from "@/components/ui/count-badge";
 import { buttonStyles } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,10 +14,12 @@ interface Props {
   links: { href: string; label: string }[];
   categories: { href: string; label: string }[];
   signedIn: boolean;
+  /** Unread notifications + orders needing action, shown on the menu button. */
+  attention?: number;
 }
 
 /** Slide-in drawer for phones: categories, pages and account actions. */
-export function MobileMenu({ links, categories, signedIn }: Props) {
+export function MobileMenu({ links, categories, signedIn, attention = 0 }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -44,9 +47,10 @@ export function MobileMenu({ links, categories, signedIn }: Props) {
         aria-expanded={open}
         aria-controls="mobile-drawer"
         aria-label="Open menu"
-        className="grid size-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 shadow-sm transition active:scale-95"
+        className="relative grid size-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 shadow-sm transition active:scale-95"
       >
         <Menu className="size-[18px]" aria-hidden />
+        <CountBadge count={attention} />
       </button>
 
       <div className={cn("fixed inset-0 z-[70] transition", open ? "visible" : "invisible delay-200")} aria-hidden={!open}>

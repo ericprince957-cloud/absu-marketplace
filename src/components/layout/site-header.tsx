@@ -4,7 +4,9 @@ import { Logo } from "@/components/layout/logo";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { SearchBox } from "@/components/layout/search-box";
+import { CountBadge } from "@/components/ui/count-badge";
 import { getUser } from "@/lib/auth";
+import { getNavBadges } from "@/lib/data/badges";
 import { listCategories } from "@/lib/data/categories";
 
 export const mainLinks = [
@@ -20,7 +22,7 @@ export const mainLinks = [
  * Desktop: one sticky header with search, icons and a nav row.
  */
 export async function SiteHeader() {
-  const [user, categories] = await Promise.all([getUser(), listCategories()]);
+  const [user, categories, badges] = await Promise.all([getUser(), listCategories(), getNavBadges()]);
   const signedIn = Boolean(user);
 
   return (
@@ -36,16 +38,16 @@ export async function SiteHeader() {
           <nav aria-label="Account" className="ml-auto hidden items-center gap-1 md:flex">
             <ThemeToggle />
             <Link href="/dashboard/saved" className="grid min-w-16 place-items-center gap-0.5 rounded-xl px-3 py-1.5 text-[11px] font-medium text-stone-700 hover:bg-stone-100">
-              <Heart className="size-5" aria-hidden /> Saved
+              <span className="relative"><Heart className="size-5" aria-hidden /><CountBadge count={badges.saved} tone="neutral" /></span> Saved
             </Link>
             <Link href={signedIn ? "/dashboard" : "/login"} className="grid min-w-16 place-items-center gap-0.5 rounded-xl px-3 py-1.5 text-[11px] font-medium text-stone-700 hover:bg-stone-100">
-              <UserRound className="size-5" aria-hidden /> {signedIn ? "Account" : "Log in"}
+              <span className="relative"><UserRound className="size-5" aria-hidden /><CountBadge count={badges.notifications} /></span> {signedIn ? "Account" : "Log in"}
             </Link>
           </nav>
 
           <div className="ml-auto flex items-center gap-1 md:hidden">
             <ThemeToggle />
-            <MobileMenu links={mainLinks} categories={categories.map((c) => ({ href: `/category/${c.slug}`, label: c.name }))} signedIn={signedIn} />
+            <MobileMenu links={mainLinks} categories={categories.map((c) => ({ href: `/category/${c.slug}`, label: c.name }))} signedIn={signedIn} attention={badges.notifications + badges.sellerOrders} />
           </div>
         </div>
 

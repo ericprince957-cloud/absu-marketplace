@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Plus, ShoppingBag, Store, UserRound, type LucideIcon } from "lucide-react";
+import { CountBadge } from "@/components/ui/count-badge";
+import type { NavBadges } from "@/lib/data/badges";
 import { cn } from "@/lib/utils";
 
 interface Tab {
@@ -10,6 +12,8 @@ interface Tab {
   label: string;
   Icon: LucideIcon;
   match: (path: string) => boolean;
+  badge?: number;
+  tone?: "alert" | "neutral";
 }
 
 /**
@@ -17,18 +21,19 @@ interface Tab {
  * The brand circle is Home. Add new tabs to the array below as features ship (e.g. Inbox).
  * Hidden on product pages, which have their own sticky "Contact seller" bar.
  */
-export function BottomNav({ signedIn }: { signedIn: boolean }) {
+export function BottomNav({ signedIn, badges }: { signedIn: boolean; badges?: NavBadges }) {
   const pathname = usePathname();
   if (pathname.startsWith("/product/")) return null;
 
   const tabs: Tab[] = [
     { href: "/marketplace", label: "Browse", Icon: Store, match: (p) => p.startsWith("/marketplace") || p.startsWith("/category") || p.startsWith("/search") },
-    { href: "/seller", label: "Sell", Icon: Plus, match: (p) => p.startsWith("/seller") },
-    { href: "/dashboard/saved", label: "Saved", Icon: Heart, match: (p) => p.startsWith("/dashboard/saved") },
+    { href: "/seller", label: "Sell", Icon: Plus, match: (p) => p.startsWith("/seller"), badge: badges?.sellerOrders },
+    { href: "/dashboard/saved", label: "Saved", Icon: Heart, match: (p) => p.startsWith("/dashboard/saved"), badge: badges?.saved, tone: "neutral" },
     {
       href: signedIn ? "/dashboard" : "/login",
       label: signedIn ? "Account" : "Log in",
       Icon: UserRound,
+      badge: badges?.notifications,
       match: (p) => (p.startsWith("/dashboard") && !p.startsWith("/dashboard/saved")) || p === "/login" || p === "/register",
     },
   ];
@@ -54,7 +59,7 @@ export function BottomNav({ signedIn }: { signedIn: boolean }) {
           </Link>
         </li>
 
-        {tabs.map(({ href, label, Icon, match }) => {
+        {tabs.map(({ href, label, Icon, match, badge, tone }) => {
           const active = match(pathname);
           return (
             <li key={label} className="min-w-0 flex-1">
@@ -66,7 +71,10 @@ export function BottomNav({ signedIn }: { signedIn: boolean }) {
                   active ? "bg-brand-900 text-white shadow-md" : "text-stone-500",
                 )}
               >
-                <Icon className={cn("size-5", active && "fill-white/20")} strokeWidth={active ? 2.2 : 1.8} aria-hidden />
+                <span className="relative">
+                  <Icon className={cn("size-5", active && "fill-white/20")} strokeWidth={active ? 2.2 : 1.8} aria-hidden />
+                  <CountBadge count={badge ?? 0} tone={tone} className={active ? "ring-brand-900" : undefined} />
+                </span>
                 <span className="truncate">{label}</span>
                 {active ? <span aria-hidden className="absolute -bottom-0.5 size-1.5 rounded-full bg-gold-400" /> : null}
               </Link>

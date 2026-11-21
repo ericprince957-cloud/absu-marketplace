@@ -15,3 +15,4 @@ async function count(table: string, filters: Record<string, string | boolean>): 
 export const countMyOrders = (userId: string) => count("orders", { buyer_id: userId });
 export const countMySaved = (userId: string) => count("saved_products", { user_id: userId });
 export const countUnreadNotifications = (userId: string) => count("notifications", { user_id: userId, is_read: false });
+export const countPendingSellerOrders = (userId: string) => count("orders", { seller_id: userId, status: "pending" });

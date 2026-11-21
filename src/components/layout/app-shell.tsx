@@ -6,10 +6,11 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { ConfigNotice } from "@/components/layout/config-notice";
 import { Logo } from "@/components/layout/logo";
 import { SidebarNav, type NavItem } from "@/components/layout/sidebar-nav";
+import { badgeForHref, getNavBadges } from "@/lib/data/badges";
 import { logout } from "@/app/(auth)/actions";
 
 /** Shared frame for the student, seller and admin areas. Always signed-in. */
-export function AppShell({
+export async function AppShell({
   area,
   items,
   children,
@@ -20,6 +21,8 @@ export function AppShell({
   children: ReactNode;
   switchLinks?: { href: string; label: string }[];
 }) {
+  const badges = await getNavBadges();
+  items = items.map((i) => ({ ...i, badge: badgeForHref(i.href, badges), badgeTone: i.href === "/dashboard/saved" ? "neutral" : "alert" }));
   return (
     <div className="min-h-screen bg-cream pb-tabbar">
       <ConfigNotice />
@@ -54,7 +57,7 @@ export function AppShell({
           {children}
         </main>
       </div>
-      <BottomNav signedIn />
+      <BottomNav signedIn badges={badges} />
     </div>
   );
 }

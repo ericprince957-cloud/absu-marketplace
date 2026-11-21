@@ -5,9 +5,10 @@ import { ConfigNotice } from "@/components/layout/config-notice";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { getUser } from "@/lib/auth";
+import { getNavBadges } from "@/lib/data/badges";
 
 export default async function SiteLayout({ children }: { children: ReactNode }) {
-  const user = await getUser();
+  const [user, badges] = await Promise.all([getUser(), getNavBadges()]);
 
   return (
     <div className="pb-tabbar">
@@ -18,7 +19,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         {children}
       </main>
       <SiteFooter />
-      <BottomNav signedIn={Boolean(user)} />
+      <BottomNav signedIn={Boolean(user)} badges={badges} />
     </div>
   );
 }

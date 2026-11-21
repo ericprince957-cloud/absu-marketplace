@@ -21,6 +21,7 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
+import { CountBadge } from "@/components/ui/count-badge";
 import { cn } from "@/lib/utils";
 
 export const navIcons: Record<string, LucideIcon> = {
@@ -48,6 +49,9 @@ export interface NavItem {
   icon: keyof typeof navIcons;
   /** Match only this exact path (used for overview pages). */
   exact?: boolean;
+  /** Counter shown next to the label (hidden when 0). */
+  badge?: number;
+  badgeTone?: "alert" | "neutral";
 }
 
 export function SidebarNav({ items }: { items: NavItem[] }) {
@@ -77,6 +81,7 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
           >
             <Icon className="size-4" aria-hidden />
             {item.label}
+            <CountBadge count={item.badge ?? 0} tone={item.badgeTone} inline />
           </Link>
         );
       })}

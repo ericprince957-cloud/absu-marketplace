@@ -7,6 +7,7 @@ import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { logout } from "@/app/(auth)/actions";
 import { Logo } from "@/components/layout/logo";
 import { navIcons, type NavItem } from "@/components/layout/sidebar-nav";
+import { CountBadge } from "@/components/ui/count-badge";
 import { buttonStyles } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,7 @@ export function AppMenu({
     };
   }, [open]);
 
+  const attention = items.reduce((n, i) => n + (i.badgeTone === "neutral" ? 0 : (i.badge ?? 0)), 0);
   const matches = (item: NavItem) =>
     item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`);
   const activeHref = items.filter(matches).sort((a, b) => b.href.length - a.href.length)[0]?.href;
@@ -51,9 +53,10 @@ export function AppMenu({
         aria-expanded={open}
         aria-controls="app-drawer"
         aria-label="Open menu"
-        className="grid size-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 shadow-sm transition active:scale-95"
+        className="relative grid size-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-800 shadow-sm transition active:scale-95"
       >
         <Menu className="size-[18px]" aria-hidden />
+        <CountBadge count={attention} />
       </button>
 
       <div className={cn("fixed inset-0 z-[70] transition", open ? "visible" : "invisible delay-200")} aria-hidden={!open}>
@@ -99,6 +102,7 @@ export function AppMenu({
                     >
                       <Icon className="size-[18px] text-brand-700" aria-hidden />
                       {item.label}
+                      <CountBadge count={item.badge ?? 0} tone={item.badgeTone} inline />
                     </Link>
                   </li>
                 );
