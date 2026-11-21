@@ -104,6 +104,8 @@
 html.dark { color-scheme: dark; }
 html.dark body { background: #090909; color: #f5f5f5; }
 html.dark .bg-cream, html.dark header.bg-cream { background-color: #090909; }
+html.dark [class*="bg-white/"] { background-color: rgb(17 17 17 / 0.95); }
+html.dark [class*="bg-cream"] { background-color: #090909; }
 html.dark .bg-sage { background-color: #14201a; }
 html.dark .bg-brand-900 { background-color: #1a553c; }
 html.dark .bg-brand-950 { background-color: #050a08; }

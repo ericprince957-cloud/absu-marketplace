@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const icons: Record<string, LucideIcon> = {
+export const navIcons: Record<string, LucideIcon> = {
   overview: LayoutDashboard,
   profile: UserRound,
   membership: CreditCard,
@@ -45,7 +45,7 @@ const icons: Record<string, LucideIcon> = {
 export interface NavItem {
   href: string;
   label: string;
-  icon: keyof typeof icons;
+  icon: keyof typeof navIcons;
   /** Match only this exact path (used for overview pages). */
   exact?: boolean;
 }
@@ -59,9 +59,9 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
   const activeHref = items.filter(matches).sort((a, b) => b.href.length - a.href.length)[0]?.href;
 
   return (
-    <nav aria-label="Section" className="snap-row gap-2 pb-1 md:flex-col md:gap-1 md:overflow-visible md:pb-0">
+    <nav aria-label="Section" className="hidden md:flex md:flex-col md:gap-1">
       {items.map((item) => {
-        const Icon = icons[item.icon] ?? LayoutDashboard;
+        const Icon = navIcons[item.icon] ?? LayoutDashboard;
         const active = item.href === activeHref;
         return (
           <Link

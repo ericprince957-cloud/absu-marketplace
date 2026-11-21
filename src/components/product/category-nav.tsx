@@ -38,7 +38,7 @@ export function CategoryChips({ categories, activeId }: { categories: Category[]
   if (categories.length === 0) return null;
   const chip = "inline-flex h-10 items-center rounded-full px-4 text-sm font-medium whitespace-nowrap transition active:scale-95";
   return (
-    <nav aria-label="Categories" className="snap-row -mx-4 gap-2 px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+    <nav aria-label="Categories" className="snap-row hidden sm:flex sm:mx-0 sm:flex-wrap gap-2">
       <Link href="/marketplace" className={cn(chip, !activeId ? "bg-brand-900 text-white" : "bg-white text-stone-700 ring-1 ring-stone-200")}>
         All
       </Link>
