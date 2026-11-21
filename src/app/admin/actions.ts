@@ -65,17 +65,17 @@ export async function setUserSuspended(formData: FormData): Promise<void> {
   revalidatePath("/admin/users");
 }
 
-export async function extendMembership(formData: FormData): Promise<void> {
+export async function grantFreeSlot(formData: FormData): Promise<void> {
   await requireAdmin();
   const userId = String(formData.get("user_id") ?? "");
-  const days = Number.parseInt(String(formData.get("days") ?? "30"), 10);
-  if (!UUID.test(userId) || !Number.isInteger(days) || days < 1 || days > 366) return;
+  if (!UUID.test(userId)) return;
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("admin_extend_membership", { p_user_id: userId, p_days: days, p_reason: "admin_grant" });
-  if (error) console.error("[admin] admin_extend_membership failed:", error.message);
+  const { error } = await supabase.rpc("admin_grant_free_slot", { p_user_id: userId });
+  if (error) console.error("[admin] admin_grant_free_slot failed:", error.message);
   revalidatePath("/admin/users");
-  revalidatePath("/admin/payments");
+  revalidatePath("/admin");
+  revalidatePath("/seller");
 }
 
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {
