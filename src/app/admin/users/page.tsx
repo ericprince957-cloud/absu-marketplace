@@ -19,6 +19,7 @@ const SIZE = 25;
 type Row = Profile & {
   user_roles: { role: Role }[] | null;
   membership_entitlements: MembershipEntitlement | MembershipEntitlement[] | null;
+  seller_applications: { status: string }[] | null;
 };
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
@@ -64,7 +65,9 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             </thead>
             <tbody>
               {rows.map((u) => {
-                const m = Array.isArray(u.membership_entitlements) ? u.membership_entitlements[0] : u.membership_entitlements;\n                const isSeller = (u.user_roles ?? []).some((r) => r.role === "seller");\n                const hasPendingApplication = (u.seller_applications ?? []).some((a) => a.status === "pending");
+                const m = Array.isArray(u.membership_entitlements) ? u.membership_entitlements[0] : u.membership_entitlements;
+                const isSeller = (u.user_roles ?? []).some((r) => r.role === "seller");
+                const hasPendingApplication = (u.seller_applications ?? []).some((a) => a.status === "pending");
                 return (
                   <tr key={u.id}>
                     <Td>
