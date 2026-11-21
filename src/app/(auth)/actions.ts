@@ -43,6 +43,34 @@ export async function register(_prev: ActionState, formData: FormData): Promise<
   redirect(`/verify-email?email=${encodeURIComponent(email)}`);
 }
 
+export async function verifySignupOtp(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const token = String(formData.get("token") ?? "").trim();
+
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+    return fail("Enter the email address you registered with.", { email: ["Enter a valid email address."] });
+  }
+  if (!/^\\d{6}$/.test(token)) {
+    return fail("Enter the 6-digit code from your email.", { token: ["Enter a valid 6-digit code."] });
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: "signup" });
+
+  if (error) {
+    if (/expired|invalid|token/i.test(error.message)) {
+      return fail("That code is invalid or has expired. Request a new code and try again.");
+    }
+    if (/rate limit|too many/i.test(error.message)) {
+      return fail("Too many attempts. Please wait a few minutes before trying again.");
+    }
+    console.error("[auth] signup OTP verification failed:", error.message);
+    return fail("We could not verify that code. Please try again.");
+  }
+
+  redirect("/dashboard?verified=1");
+}
+
 export async function login(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const parsed = loginSchema.safeParse(formToObject(formData));
   if (!parsed.success) return validationFailure(parsed.error);
@@ -85,11 +113,11 @@ export async function resendVerification(_prev: ActionState, formData: FormData)
   });
 
   if (error) {
-    if (/rate limit|too many|seconds/i.test(error.message)) return fail("Please wait a minute before requesting another email.");
+    if (/rate limit|too many|seconds/i.test(error.message)) return fail("Please wait a minute before requesting another code.");
     console.error("[auth] resend failed:", error.message);
-    return fail("We could not send the email. Please try again shortly.");
+    return fail("We could not send a new code. Please try again shortly.");
   }
-  return success("Verification email sent. Check your inbox and spam folder.");
+  return success("A new verification code has been sent. Check your inbox and spam folder.");
 }
 
 export async function forgotPassword(_prev: ActionState, formData: FormData): Promise<ActionState> {
