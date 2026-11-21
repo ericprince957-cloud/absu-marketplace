@@ -20,8 +20,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <h1 className="text-2xl font-bold">Welcome back</h1>
       <p className="mt-1 text-sm text-stone-600">Log in to buy, sell and manage your membership.</p>
       <div className="mt-5 space-y-3">
+        {first(sp.checkEmail) ? <Alert tone="success">Account created. Check your email and click the confirmation link. After confirmation, return here and log in.</Alert> : null}
+        {first(sp.verified) ? <Alert tone="success">Your email has been confirmed. You can now log in.</Alert> : null}
         {first(sp.reset) ? <Alert tone="success">Password updated. Log in with your new password.</Alert> : null}
-        {first(sp.error) === "link" ? <Alert tone="error">That link is invalid or has expired. Request a new one.</Alert> : null}
+        {first(sp.error) === "link" ? <Alert tone="error">That confirmation link is invalid or has expired. Please register again or contact support.</Alert> : null}
       </div>
       <div className="mt-5">
         <LoginForm next={next} />
