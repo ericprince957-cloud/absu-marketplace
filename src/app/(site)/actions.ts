@@ -121,6 +121,7 @@ export async function respondToItemRequest(formData: FormData): Promise<void> {
     supabase.from("item_requests").select("id").eq("id", requestId).eq("status", "open").maybeSingle(),
   ]);
   if (!request) redirect("/requests?error=closed");
+  if (!profile?.whatsapp) redirect("/requests?error=whatsapp");
   const { error } = await supabase.from("item_request_responses").insert({
     request_id: requestId, seller_id: user.id, message, contact_whatsapp: profile?.whatsapp ?? null,
   });
