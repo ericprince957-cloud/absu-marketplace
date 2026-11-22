@@ -91,7 +91,7 @@ export async function createItemRequest(formData: FormData): Promise<void> {
   if (title.length < 5 || title.length > 120 || description.length < 10 || description.length > 1500 || (campusArea && !areas.includes(campusArea)) || hostelName.length > 100) {
     redirect("/requests?error=invalid");
   }
-  if (neededBy && (!/^\\d{4}-\\d{2}-\\d{2}$/.test(neededBy) || Number.isNaN(Date.parse(neededBy)) || neededBy < new Date().toISOString().slice(0, 10))) {
+  if (neededBy && (!/^\d{4}-\d{2}-\d{2}$/.test(neededBy) || Number.isNaN(Date.parse(neededBy)) || neededBy < new Date().toISOString().slice(0, 10))) {
     redirect("/requests?error=date");
   }
   const supabase = await createClient();
