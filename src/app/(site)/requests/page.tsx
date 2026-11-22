@@ -26,8 +26,9 @@ export default async function RequestsPage({ searchParams }: { searchParams: Pro
     .limit(60);
   if (error) console.error("[requests] list failed:", error.message);
 
-  const { data: responses } = user
-    ? await supabase.from("item_request_responses").select("id,request_id,seller_id,message,contact_whatsapp,created_at").in("request_id", (requests ?? []).map((r) => r.id).filter((id) => Boolean(id)))
+  const requestIds = (requests ?? []).map((r) => r.id);
+  const { data: responses } = user && requestIds.length > 0
+    ? await supabase.from("item_request_responses").select("id,request_id,seller_id,message,contact_whatsapp,created_at").in("request_id", requestIds)
     : { data: [] as { id: string; request_id: string; seller_id: string; message: string; contact_whatsapp: string | null; created_at: string }[] };
 
   const errorMessage = params.error === "invalid" ? "Check the title, description and location fields."
@@ -35,6 +36,7 @@ export default async function RequestsPage({ searchParams }: { searchParams: Pro
     : params.error === "save" ? "We couldn't publish your request. Please try again."
     : params.error === "response" ? "Enter a response between 5 and 800 characters."
     : params.error === "closed" ? "This request is no longer open."
+    : params.error === "whatsapp" ? "Add your WhatsApp number to your profile before responding to requests."
     : params.error === "duplicate" ? "You have already responded to this request, or the response could not be saved."
     : null;
 
