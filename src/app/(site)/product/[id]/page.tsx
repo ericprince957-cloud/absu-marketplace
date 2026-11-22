@@ -88,12 +88,15 @@ export default async function ProductPage({ params }: { params: Params }) {
               <Badge tone={product.quantity > 0 ? "neutral" : "red"}>
                 {product.quantity > 0 ? `${product.quantity} in stock` : "Sold out"}
               </Badge>
+              {product.campus_area ? <Badge tone="neutral">{product.campus_area}</Badge> : null}
+              {product.hostel_name ? <Badge tone="neutral">{product.hostel_name}</Badge> : null}
               {product.location ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-xs font-medium text-stone-600">
                   <MapPin className="size-3.5" aria-hidden /> {product.location}
                 </span>
               ) : null}
             </div>
+            {product.course_code ? <p className="mt-3 text-sm font-semibold text-brand-800">{product.course_code} · {product.academic_department} · {product.academic_level}</p> : null}
             <p className="mt-3 text-xs text-stone-500">Listed {formatDate(product.created_at)}</p>
           </div>
 
@@ -127,7 +130,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               <>
                 <h2 className="font-semibold text-stone-950">Interested in this item?</h2>
                 <p className="text-sm leading-6 text-stone-600">Buying is free. Contact the seller directly on WhatsApp to confirm availability, agree on pickup and pay the seller. No buyer subscription or account is required.</p>
-                <SellerContact productId={product.id} productTitle={product.title} />
+                <SellerContact productId={product.id} productTitle={product.title} price={product.price} />
                 {user ? (
                   <div className="border-t border-stone-100 pt-4">
                     <p className="mb-2 text-sm font-medium text-stone-700">Or send an order request from your account</p>
