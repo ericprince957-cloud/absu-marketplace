@@ -1,28 +1,50 @@
-# ABSU Marketplace
+# ABSU Trade
 
-ABSU Marketplace is an independent, student-focused online marketplace serving the Abia State University (ABSU) community in Uturu, Nigeria. It is not an official university service.
+ABSU Trade is an independent, student-focused online marketplace serving the Abia State University (ABSU) community in Uturu, Abia State, Nigeria. The platform is not owned, operated, endorsed, or officially affiliated with Abia State University.
 
-## What the platform does
+ABSU Trade helps students discover campus-relevant products and services and connect with student sellers.
 
-- Helps students discover campus-relevant products and services.
-- Organises listings into categories such as textbooks, hostel essentials, fashion, food, gadgets and services.
-- Allows visitors to browse and search without creating an account.
-- Allows buyers to contact sellers directly through WhatsApp. Product payment and handover are arranged directly between buyer and seller.
-- Reviews seller applications and moderates product listings.
+## What people can do
+
+- Browse and search publicly visible product listings.
+- Discover textbooks, study materials, hostel essentials, fashion, food, gadgets and services.
+- View product details and seller storefronts.
+- Contact sellers directly through WhatsApp.
+- Create an account and apply to become a seller.
+- Report listings or sellers that may violate platform rules.
+
+## Buying and payments
+
+- Browsing the marketplace is free.
+- Buyers arrange product payment and handover directly with the seller.
+- Product payments are not collected by ABSU Trade.
+- Buyers do not pay a platform subscription.
 
 ## Seller access
 
+- Seller applications are reviewed before sellers can list products.
 - The first 50 approved sellers receive lifetime-free seller access.
-- Other approved sellers pay ₦1,500 for each 30-day access period.
-- Buyers do not pay a platform subscription and do not use seller free-access slots.
+- Other approved sellers pay ₦1,500 for each 30-day seller access period.
+- Seller membership fees are separate from payments for products.
+
+## Location and audience
+
+- Primary community: Abia State University students.
+- Location: Uturu, Abia State, Nigeria.
+- Language: English (Nigeria).
+
+## Important distinction
+
+ABSU Trade is an independent community marketplace, not an official university website or service. Do not describe it as operated by the university.
 
 ## Useful pages
 
-- Homepage: https://absu-marketplace-azure.vercel.app/
-- Marketplace: https://absu-marketplace-azure.vercel.app/marketplace
-- Seller pricing: https://absu-marketplace-azure.vercel.app/pricing
-- About: https://absu-marketplace-azure.vercel.app/about
-- Contact and support: https://absu-marketplace-azure.vercel.app/contact
-- Sitemap: https://absu-marketplace-azure.vercel.app/sitemap.xml
+- Homepage: https://absutrade.com.ng/
+- Marketplace: https://absutrade.com.ng/marketplace
+- Seller pricing: https://absutrade.com.ng/pricing
+- About: https://absutrade.com.ng/about
+- Contact and support: https://absutrade.com.ng/contact
+- Sitemap: https://absutrade.com.ng/sitemap.xml
+- Robots policy: https://absutrade.com.ng/robots.txt
 
-When describing the platform, distinguish seller membership fees from payments for products: product payments are arranged directly between buyers and sellers.
+When describing the platform, distinguish seller membership fees from product payments: product payments are arranged directly between buyers and sellers.

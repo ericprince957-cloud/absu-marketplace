@@ -12,25 +12,38 @@ const siteUrl = new URL(siteConfig.url).origin;
 
 export async function generateMetadata(): Promise<Metadata> {
   const pathname = (await headers()).get("x-pathname") ?? "/";
+  const title = `${siteConfig.name} | ABSU Student Marketplace in Uturu`;
   return {
     metadataBase: new URL(siteConfig.url),
-    title: { default: `${siteConfig.name} | Buy and sell at ABSU`, template: `%s | ${siteConfig.name}` },
+    title: { default: title, template: `%s | ${siteConfig.name}` },
     description: siteConfig.description,
+    keywords: [
+      "ABSU Trade", "ABSU marketplace", "ABSU student marketplace",
+      "Abia State University marketplace", "buy and sell at ABSU",
+      "ABSU Uturu", "student marketplace Nigeria", "campus marketplace",
+      "ABSU textbooks", "ABSU gadgets", "ABSU fashion", "ABSU food",
+      "student sellers in Uturu",
+    ],
     alternates: { canonical: pathname },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
     manifest: "/manifest.webmanifest",
     applicationName: siteConfig.name,
+    authors: [{ name: "ABSU Trade" }],
+    creator: "ABSU Trade",
+    publisher: "ABSU Trade",
     appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.shortName },
     icons: { icon: "/icons/icon.svg", apple: "/icons/icon.svg" },
     openGraph: {
-      title: siteConfig.name,
+      title,
       description: siteConfig.description,
       siteName: siteConfig.name,
+      url: siteUrl,
       type: "website",
       locale: "en_NG",
     },
     twitter: {
-      card: "summary",
-      title: siteConfig.name,
+      card: "summary_large_image",
+      title,
       description: siteConfig.description,
     },
   };
@@ -52,13 +65,26 @@ const structuredData = [
     name: siteConfig.name,
     url: siteUrl,
     description: siteConfig.description,
+    areaServed: {
+      "@type": "Place",
+      name: "Abia State University, Uturu, Abia State, Nigeria",
+    },
+    knowsAbout: [
+      "Student marketplace",
+      "Campus buying and selling",
+      "Textbooks and study materials",
+      "Student fashion and gadgets",
+      "Food and student services",
+    ],
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: siteConfig.name,
+    alternateName: ["ABSU Marketplace", "ABSU Trade Nigeria"],
     url: siteUrl,
     description: siteConfig.description,
+    inLanguage: "en-NG",
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/search?q={search_term_string}`,

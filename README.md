@@ -1,8 +1,12 @@
-# ABSU Marketplace
+# ABSU Trade
 
-A student marketplace for Abia State University (ABSU), Uturu, Nigeria. Anyone can browse and search products for free. Buyers can contact sellers and arrange purchases directly on WhatsApp without an account. Approved sellers can list items with photos and manage their storefront.
+ABSU Trade is an independent student marketplace for the Abia State University (ABSU) community in Uturu, Abia State, Nigeria. Anyone can browse and search publicly visible products for free. Buyers can contact sellers and arrange purchases directly on WhatsApp without an account. Approved sellers can list items with photos and manage their storefronts.
 
 **Seller access:** the first 50 approved sellers receive lifetime-free access. Every approved seller after that pays **NGN 1,500 for 30 days** through Paystack. Buyers never pay a subscription or platform fee.
+
+**Live website:** https://absutrade.com.ng
+
+ABSU Trade is an independent community platform and is not an official university service.
 
 ## Current project status
 
@@ -47,7 +51,7 @@ Scripts: `npm run typecheck` · `npm run lint` · `npm test` · `npm run build`
 src/
   app/                 Public pages, auth, dashboards and API routes
   components/          UI and feature components
-  config/site.ts       Frontend membership constants
+  config/site.ts       Frontend membership constants and canonical site identity
   lib/                 Supabase, auth, validation and Paystack logic
 docs/                  Backend contract, security, payment and launch guides
 supabase/seed.sql       Idempotent category and app-setting reference seed

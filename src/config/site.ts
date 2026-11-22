@@ -1,9 +1,9 @@
 export const siteConfig = {
-  name: "ABSU Marketplace",
-  shortName: "ABSU Market",
+  name: "ABSU Trade",
+  shortName: "ABSU Trade",
   description:
-    "The student marketplace for Abia State University, Uturu. Discover textbooks, hostel essentials, gadgets, fashion, food and services from student sellers.",
-  url: "https://absu-marketplace-azure.vercel.app",
+    "ABSU Trade is the student marketplace for Abia State University (ABSU), Uturu, Nigeria. Discover and buy textbooks, gadgets, fashion, food, hostel essentials and student services, or list products for fellow ABSU students.",
+  url: "https://absutrade.com.ng",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "",
 } as const;
 

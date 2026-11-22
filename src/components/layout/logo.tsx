@@ -11,7 +11,7 @@ export function Logo({ className, light = false }: { className?: string; light?:
       <span className="leading-none">
         <span className={cn("block font-display text-[22px] font-bold tracking-tight", light ? "text-white" : "text-brand-900")}>ABSU</span>
         <span className={cn("mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.22em]", light ? "text-brand-200" : "text-stone-500")}>
-          Marketplace
+          Trade
         </span>
       </span>
     </Link>
