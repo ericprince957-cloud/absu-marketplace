@@ -82,7 +82,7 @@ export default async function HomePage() {
           <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-6 py-10 text-center">
             <p className="font-semibold">Nothing listed yet</p>
             <p className="mx-auto mt-1 max-w-md text-sm text-stone-600">
-              Be one of the first sellers on ABSU Marketplace. Apply in minutes and list your first product.
+              Be one of the first sellers on ABSU Trade. Apply in minutes and list your first product.
             </p>
             <LinkButton href="/seller/apply" className="mt-5">Become a seller</LinkButton>
           </div>
