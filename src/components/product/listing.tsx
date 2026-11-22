@@ -32,6 +32,7 @@ export function parseListingParams(sp: SearchParams): { query: ProductQuery; val
     max: first(sp.max),
     condition,
     campus_area: first(sp.campus_area),
+    hostel_name: first(sp.hostel_name)?.slice(0,100),
     academic_department: first(sp.academic_department)?.slice(0,100),
     academic_level: first(sp.academic_level),
     course_code: first(sp.course_code)?.slice(0,30),
@@ -47,6 +48,7 @@ export function parseListingParams(sp: SearchParams): { query: ProductQuery; val
       maxPrice: parseNumber(values.max),
       condition,
       campusArea: values.campus_area,
+      hostelName: values.hostel_name,
       academicDepartment: values.academic_department,
       academicLevel: values.academic_level,
       courseCode: values.course_code,
@@ -70,7 +72,7 @@ export async function Listing({
   if (lockedCategoryId) query.categoryId = lockedCategoryId;
 
   const [categories, { products, total }] = await Promise.all([listCategories(), listProducts(query)]);
-  const hasFilters = Boolean(values.q || values.category || values.min || values.max || values.condition || values.campus_area || values.academic_department || values.academic_level || values.course_code);
+  const hasFilters = Boolean(values.q || values.category || values.min || values.max || values.condition || values.campus_area || values.hostel_name || values.academic_department || values.academic_level || values.course_code);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -90,7 +92,7 @@ export async function Listing({
             pageSize={PAGE_SIZE}
             total={total}
             basePath={basePath}
-            params={{ q: values.q, category: values.category, min: values.min, max: values.max, condition: values.condition, campus_area: values.campus_area, academic_department: values.academic_department, academic_level: values.academic_level, course_code: values.course_code, sort: values.sort }}
+            params={{ q: values.q, category: values.category, min: values.min, max: values.max, condition: values.condition, campus_area: values.campus_area, hostel_name: values.hostel_name, academic_department: values.academic_department, academic_level: values.academic_level, course_code: values.course_code, sort: values.sort }}
           />
         </>
       ) : (
