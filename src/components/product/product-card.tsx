@@ -37,6 +37,7 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
 
         <div className="flex flex-1 flex-col px-1.5 pb-1 pt-2.5">
           <h3 className="line-clamp-2 min-h-[2.5rem] font-sans text-[13.5px] font-medium leading-snug text-stone-900">{product.title}</h3>
+          {product.campus_area || product.hostel_name ? <p className="mt-1 truncate text-[10px] font-medium text-brand-700">{[product.campus_area,product.hostel_name].filter(Boolean).join(" · ")}</p> : null}
           {product.location ? (
             <p className="mt-1 inline-flex items-center gap-1 truncate text-[11px] text-stone-500">
               <MapPin className="size-3 shrink-0" aria-hidden />
