@@ -10,6 +10,10 @@ export interface FilterValues {
   min?: string;
   max?: string;
   condition?: string;
+  campus_area?: string;
+  academic_department?: string;
+  academic_level?: string;
+  course_code?: string;
   sort?: string;
 }
 
@@ -30,7 +34,7 @@ export function ProductFilters({
   lockedCategory?: boolean;
 }) {
   const label = "mb-1 block text-xs font-medium text-stone-600";
-  const activeCount = [values.min, values.max, values.condition, values.sort, !lockedCategory && values.category].filter(Boolean).length;
+  const activeCount = [values.min, values.max, values.condition, values.campus_area, values.academic_department, values.academic_level, values.course_code, values.sort, !lockedCategory && values.category].filter(Boolean).length;
 
   return (
     <form action={action} method="get" className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-stone-200 sm:p-4">
@@ -57,7 +61,7 @@ export function ProductFilters({
       </div>
 
       <div className="mt-3 hidden space-y-3 peer-checked:block md:block">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {!lockedCategory ? (
             <div className="col-span-2 lg:col-span-1">
               <label htmlFor="f-cat" className={label}>Category</label>
@@ -86,6 +90,13 @@ export function ProductFilters({
               ))}
             </select>
           </div>
+          <div>
+            <label htmlFor="f-campus" className={label}>Campus area</label>
+            <select id="f-campus" name="campus_area" defaultValue={values.campus_area ?? ""} className={filterControl}><option value="">All areas</option>{["Main Campus","Permanent Site","Annex","Off-Campus","Town"].map((v)=><option key={v}>{v}</option>)}</select>
+          </div>
+          <div><label htmlFor="f-dept" className={label}>Department</label><input id="f-dept" name="academic_department" defaultValue={values.academic_department} placeholder="e.g. Mathematics" className={filterControl}/></div>
+          <div><label htmlFor="f-level" className={label}>Level</label><select id="f-level" name="academic_level" defaultValue={values.academic_level ?? ""} className={filterControl}><option value="">All levels</option>{["100L","200L","300L","400L","500L"].map((v)=><option key={v}>{v}</option>)}</select></div>
+          <div><label htmlFor="f-course" className={label}>Course code</label><input id="f-course" name="course_code" defaultValue={values.course_code} placeholder="e.g. MTH 101" className={filterControl}/></div>
           <div>
             <label htmlFor="f-sort" className={label}>Sort by</label>
             <select id="f-sort" name="sort" defaultValue={values.sort ?? "newest"} className={filterControl}>
