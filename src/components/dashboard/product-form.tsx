@@ -21,6 +21,8 @@ export function ProductForm({ userId, categories, product }: { userId: string; c
   const [files, setFiles] = useState<File[]>([]);
   const [existing, setExisting] = useState(product?.product_images ?? []);
   const [notice, setNotice] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState(product?.category_id ?? "");
+  const isStudyMaterial = selectedCategory === "0370b302-780b-48ff-a75a-e1b4754c9aac";
 
   const previews = useMemo(() => files.map((f) => URL.createObjectURL(f)), [files]);
   useEffect(() => () => previews.forEach((u) => URL.revokeObjectURL(u)), [previews]);
@@ -95,7 +97,7 @@ export function ProductForm({ userId, categories, product }: { userId: string; c
         </div>
         <TextField label="Price (₦)" name="price" type="number" min={1} step="any" inputMode="decimal" defaultValue={product?.price} required error={fe?.price} />
         <TextField label="Quantity in stock" name="quantity" type="number" min={1} defaultValue={product?.quantity ?? 1} required error={fe?.quantity} />
-        <SelectField label="Category" name="category_id" defaultValue={product?.category_id ?? ""} required error={fe?.category_id}>
+        <SelectField label="Category" name="category_id" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} required error={fe?.category_id}>
           <option value="" disabled>Choose a category</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>{c.name}</option>
@@ -106,9 +108,23 @@ export function ProductForm({ userId, categories, product }: { userId: string; c
             <option key={c.value} value={c.value}>{c.label}</option>
           ))}
         </SelectField>
+        <SelectField label="Campus area" name="campus_area" defaultValue={product?.campus_area ?? ""} error={fe?.campus_area}>
+          <option value="">Choose area (optional)</option><option>Main Campus</option><option>Permanent Site</option><option>Annex</option><option>Off-Campus</option><option>Town</option>
+        </SelectField>
+        <TextField label="Hostel / lodge (optional)" name="hostel_name" defaultValue={product?.hostel_name ?? ""} error={fe?.hostel_name} placeholder="e.g. Hostel B, Umuahia Lodge" />
         <div className="sm:col-span-2">
-          <TextField label="Pickup location (optional)" name="location" defaultValue={product?.location ?? ""} error={fe?.location} placeholder="e.g. Hostel B, Main Gate" />
+          <TextField label="Pickup landmark (optional)" name="location" defaultValue={product?.location ?? ""} error={fe?.location} placeholder="e.g. Near Main Gate" />
         </div>
+        {isStudyMaterial ? <>
+          <div className="sm:col-span-2 rounded-xl border border-brand-200 bg-brand-50 p-4">
+            <p className="mb-3 text-sm font-semibold text-brand-900">Academic details (required for study materials)</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <TextField label="Department" name="academic_department" defaultValue={product?.academic_department ?? ""} required error={fe?.academic_department} placeholder="e.g. Mathematics" />
+              <SelectField label="Level" name="academic_level" defaultValue={product?.academic_level ?? ""} required error={fe?.academic_level}><option value="">Select level</option>{["100L","200L","300L","400L","500L"].map((v)=><option key={v}>{v}</option>)}</SelectField>
+              <TextField label="Course code" name="course_code" defaultValue={product?.course_code ?? ""} required error={fe?.course_code} placeholder="e.g. MTH 101" />
+            </div>
+          </div>
+        </> : null}
         <div className="sm:col-span-2">
           <TextAreaField label="Description" name="description" rows={6} defaultValue={product?.description} required error={fe?.description} hint="Be honest: mention defects, age and what is included." />
         </div>
