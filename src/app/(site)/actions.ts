@@ -87,8 +87,9 @@ export async function createItemRequest(formData: FormData): Promise<void> {
   const campusArea = String(formData.get("campus_area") ?? "").trim();
   const hostelName = String(formData.get("hostel_name") ?? "").trim();
   const neededBy = String(formData.get("needed_by") ?? "").trim();
+  const categoryId = String(formData.get("category_id") ?? "").trim();
   const areas = ["Main Campus", "Permanent Site", "Annex", "Off-Campus", "Town"];
-  if (title.length < 5 || title.length > 120 || description.length < 10 || description.length > 1500 || (campusArea && !areas.includes(campusArea)) || hostelName.length > 100) {
+  if (title.length < 5 || title.length > 120 || description.length < 10 || description.length > 1500 || (campusArea && !areas.includes(campusArea)) || hostelName.length > 100 || (categoryId && !/^[0-9a-f-]{36}$/i.test(categoryId))) {
     redirect("/requests?error=invalid");
   }
   if (neededBy && (!/^\d{4}-\d{2}-\d{2}$/.test(neededBy) || Number.isNaN(Date.parse(neededBy)) || neededBy < new Date().toISOString().slice(0, 10))) {
@@ -96,7 +97,7 @@ export async function createItemRequest(formData: FormData): Promise<void> {
   }
   const supabase = await createClient();
   const { error } = await supabase.from("item_requests").insert({
-    requester_id: user.id, title, description, campus_area: campusArea || null,
+    requester_id: user.id, title, description, category_id: categoryId || null, campus_area: campusArea || null,
     hostel_name: hostelName || null, needed_by: neededBy || null,
   });
   if (error) {
