@@ -72,6 +72,11 @@ export async function saveProduct(id: string | null, formData: FormData): Promis
     condition: d.condition,
     quantity: d.quantity,
     location: d.location ?? null,
+    campus_area: d.campus_area || null,
+    hostel_name: d.hostel_name ?? null,
+    academic_department: d.academic_department ?? null,
+    academic_level: d.academic_level || null,
+    course_code: d.course_code ?? null,
     status: "pending" as const,
     moderation_note: null,
   };
