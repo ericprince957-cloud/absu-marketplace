@@ -22,7 +22,7 @@ export function ProductForm({ userId, categories, product }: { userId: string; c
   const [existing, setExisting] = useState(product?.product_images ?? []);
   const [notice, setNotice] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState(product?.category_id ?? "");
-  const isStudyMaterial = selectedCategory === "0370b302-780b-48ff-a75a-e1b4754c9aac";
+  const isStudyMaterial = ["0370b302-780b-48ff-a75a-e1b4754c9aac", "745bc3a9-214f-4263-990f-1e46e3a21254"].includes(selectedCategory);
 
   const previews = useMemo(() => files.map((f) => URL.createObjectURL(f)), [files]);
   useEffect(() => () => previews.forEach((u) => URL.revokeObjectURL(u)), [previews]);
