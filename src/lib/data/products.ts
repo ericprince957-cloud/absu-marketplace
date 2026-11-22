@@ -18,6 +18,10 @@ export interface ProductQuery {
   minPrice?: number;
   maxPrice?: number;
   condition?: ProductCondition;
+  campusArea?: string;
+  academicDepartment?: string;
+  academicLevel?: string;
+  courseCode?: string;
   sort?: ProductSort;
   page?: number;
   pageSize?: number;
@@ -46,6 +50,10 @@ export async function listProducts(query: ProductQuery = {}): Promise<{ products
   if (query.minPrice !== undefined && Number.isFinite(query.minPrice)) req = req.gte("price", query.minPrice);
   if (query.maxPrice !== undefined && Number.isFinite(query.maxPrice)) req = req.lte("price", query.maxPrice);
   if (query.condition) req = req.eq("condition", query.condition);
+  if (query.campusArea) req = req.eq("campus_area", query.campusArea);
+  if (query.academicDepartment) req = req.ilike("academic_department", `%${sanitizeSearch(query.academicDepartment)}%`);
+  if (query.academicLevel) req = req.eq("academic_level", query.academicLevel);
+  if (query.courseCode) req = req.ilike("course_code", `%${sanitizeSearch(query.courseCode)}%`);
 
   if (query.sort === "price_asc") req = req.order("price", { ascending: true });
   else if (query.sort === "price_desc") req = req.order("price", { ascending: false });
