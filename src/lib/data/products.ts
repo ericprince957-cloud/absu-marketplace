@@ -19,6 +19,7 @@ export interface ProductQuery {
   maxPrice?: number;
   condition?: ProductCondition;
   campusArea?: string;
+  hostelName?: string;
   academicDepartment?: string;
   academicLevel?: string;
   courseCode?: string;
@@ -51,6 +52,7 @@ export async function listProducts(query: ProductQuery = {}): Promise<{ products
   if (query.maxPrice !== undefined && Number.isFinite(query.maxPrice)) req = req.lte("price", query.maxPrice);
   if (query.condition) req = req.eq("condition", query.condition);
   if (query.campusArea) req = req.eq("campus_area", query.campusArea);
+  if (query.hostelName) req = req.ilike("hostel_name", `%${sanitizeSearch(query.hostelName)}%`);
   if (query.academicDepartment) req = req.ilike("academic_department", `%${sanitizeSearch(query.academicDepartment)}%`);
   if (query.academicLevel) req = req.eq("academic_level", query.academicLevel);
   if (query.courseCode) req = req.ilike("course_code", `%${sanitizeSearch(query.courseCode)}%`);
