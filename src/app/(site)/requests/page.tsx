@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/ui/card";
 import { getRoles, getUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { toWhatsAppNumber } from "@/lib/utils";
+import { listCategories } from "@/lib/data/categories";
 
 export const metadata = {
   title: "Request an Item",
@@ -17,10 +18,11 @@ export default async function RequestsPage({ searchParams }: { searchParams: Pro
   const params = await searchParams;
   const user = await getUser();
   const roles = user ? await getRoles(user.id) : [];
+  const [categories] = await Promise.all([listCategories()]);
   const supabase = await createClient();
   const { data: requests, error } = await supabase
     .from("item_requests")
-    .select("id,requester_id,title,description,campus_area,hostel_name,needed_by,status,created_at")
+    .select("id,requester_id,title,description,category_id,campus_area,hostel_name,needed_by,status,created_at")
     .eq("status", "open")
     .order("created_at", { ascending: false })
     .limit(60);
@@ -60,6 +62,9 @@ export default async function RequestsPage({ searchParams }: { searchParams: Pro
             <label className="space-y-1 text-sm font-medium text-stone-700 sm:col-span-2">Add details
               <textarea name="description" required minLength={10} maxLength={1500} rows={3} placeholder="Mention the condition, budget or other details that will help sellers." className="w-full rounded-xl border border-stone-300 px-3 py-2 text-base" />
             </label>
+            <label className="space-y-1 text-sm font-medium text-stone-700">Item category (optional)
+              <select name="category_id" className="h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-base"><option value="">Any category</option>{categories.map((category)=><option key={category.id} value={category.id}>{category.name}</option>)}</select>
+            </label>
             <label className="space-y-1 text-sm font-medium text-stone-700">Preferred campus area
               <select name="campus_area" className="h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-base"><option value="">Any area</option>{areas.map((a)=><option key={a}>{a}</option>)}</select>
             </label>
@@ -89,6 +94,7 @@ export default async function RequestsPage({ searchParams }: { searchParams: Pro
               </div>
               <p className="mt-3 whitespace-pre-line text-sm leading-6 text-stone-700">{request.description}</p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-stone-600">
+                {request.category_id ? <span className="rounded-full bg-brand-50 px-3 py-1 text-brand-800">{categories.find((category)=>category.id===request.category_id)?.name ?? "Item category"}</span> : null}
                 {request.campus_area ? <span className="rounded-full bg-stone-100 px-3 py-1">{request.campus_area}</span> : null}
                 {request.hostel_name ? <span className="rounded-full bg-stone-100 px-3 py-1">{request.hostel_name}</span> : null}
                 {request.needed_by ? <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-800">Needed by {new Date(request.needed_by+"T00:00:00").toLocaleDateString("en-NG")}</span> : null}
