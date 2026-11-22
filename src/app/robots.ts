@@ -1,20 +1,21 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 
+const privatePaths = ["/dashboard", "/seller", "/admin", "/api", "/auth"];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
         allow: ["/", "/marketplace", "/product/", "/store/", "/category/", "/about", "/pricing", "/contact"],
-        disallow: ["/dashboard", "/seller", "/admin", "/api", "/auth"],
+        disallow: privatePaths,
       },
-      { userAgent: "GPTBot", allow: "/" },
-      { userAgent: "OAI-SearchBot", allow: "/" },
-      { userAgent: "ChatGPT-User", allow: "/" },
-      { userAgent: "ClaudeBot", allow: "/" },
-      { userAgent: "PerplexityBot", allow: "/" },
-      { userAgent: "Google-Extended", allow: "/" },
+      {
+        userAgent: ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "PerplexityBot", "Google-Extended"],
+        allow: "/",
+        disallow: privatePaths,
+      },
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,
     host: siteConfig.url,
