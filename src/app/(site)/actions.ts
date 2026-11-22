@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getUser } from "@/lib/auth";
+import { getRoles, getUser, requireUser } from "@/lib/auth";
 import { fail, success, type ActionState } from "@/lib/action-state";
 import { contactSchema, formToObject, orderSchema, validationFailure } from "@/lib/validation";
 
@@ -75,4 +76,59 @@ export async function submitContact(_prev: ActionState, formData: FormData): Pro
     return fail("We could not send your message. Please try again.");
   }
   return success("Thanks, we received your message and will reply by email.");
+}
+
+
+/** Create an In Search Of request for the campus community. */
+export async function createItemRequest(formData: FormData): Promise<void> {
+  const user = await requireUser("/requests");
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const campusArea = String(formData.get("campus_area") ?? "").trim();
+  const hostelName = String(formData.get("hostel_name") ?? "").trim();
+  const neededBy = String(formData.get("needed_by") ?? "").trim();
+  const areas = ["Main Campus", "Permanent Site", "Annex", "Off-Campus", "Town"];
+  if (title.length < 5 || title.length > 120 || description.length < 10 || description.length > 1500 || (campusArea && !areas.includes(campusArea)) || hostelName.length > 100) {
+    redirect("/requests?error=invalid");
+  }
+  if (neededBy && (!/^\\d{4}-\\d{2}-\\d{2}$/.test(neededBy) || Number.isNaN(Date.parse(neededBy)) || neededBy < new Date().toISOString().slice(0, 10))) {
+    redirect("/requests?error=date");
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.from("item_requests").insert({
+    requester_id: user.id, title, description, campus_area: campusArea || null,
+    hostel_name: hostelName || null, needed_by: neededBy || null,
+  });
+  if (error) {
+    console.error("[actions] createItemRequest failed:", error.message);
+    redirect("/requests?error=save");
+  }
+  revalidatePath("/requests");
+  redirect("/requests?created=1");
+}
+
+/** Approved sellers can respond to an open request; their verified profile WhatsApp is used. */
+export async function respondToItemRequest(formData: FormData): Promise<void> {
+  const user = await requireUser("/requests");
+  const requestId = String(formData.get("request_id") ?? "");
+  const message = String(formData.get("message") ?? "").trim();
+  if (!/^[0-9a-f-]{36}$/i.test(requestId) || message.length < 5 || message.length > 800) redirect("/requests?error=response");
+  const roles = await getRoles(user.id);
+  if (!roles.includes("seller")) redirect("/seller/apply");
+  const supabase = await createClient();
+  const [{ data: profile }, { data: request }] = await Promise.all([
+    supabase.from("profiles").select("whatsapp").eq("id", user.id).maybeSingle(),
+    supabase.from("item_requests").select("id").eq("id", requestId).eq("status", "open").maybeSingle(),
+  ]);
+  if (!request) redirect("/requests?error=closed");
+  const { error } = await supabase.from("item_request_responses").insert({
+    request_id: requestId, seller_id: user.id, message, contact_whatsapp: profile?.whatsapp ?? null,
+  });
+  if (error) {
+    console.error("[actions] respondToItemRequest failed:", error.message);
+    redirect("/requests?error=duplicate");
+  }
+  revalidatePath("/requests");
+  revalidatePath(`/requests/${requestId}`);
+  redirect("/requests?responded=1");
 }
