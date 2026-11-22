@@ -12,6 +12,7 @@ import { listCategories } from "@/lib/data/categories";
 export const mainLinks = [
   { href: "/", label: "Home" },
   { href: "/marketplace", label: "Marketplace" },
+  { href: "/requests", label: "Request an Item" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Support" },
