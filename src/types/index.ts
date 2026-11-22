@@ -59,6 +59,11 @@ export interface Product {
   condition: ProductCondition;
   quantity: number;
   location: string | null;
+  campus_area: string | null;
+  hostel_name: string | null;
+  academic_department: string | null;
+  academic_level: string | null;
+  course_code: string | null;
   status: ProductStatus;
   moderation_note: string | null;
   created_at: string;
