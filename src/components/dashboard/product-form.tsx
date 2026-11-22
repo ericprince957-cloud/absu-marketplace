@@ -117,7 +117,7 @@ export function ProductForm({ userId, categories, product }: { userId: string; c
         </div>
         {isStudyMaterial ? <>
           <div className="sm:col-span-2 rounded-xl border border-brand-200 bg-brand-50 p-4">
-            <p className="mb-3 text-sm font-semibold text-brand-900">Academic details (required for study materials)</p>
+            <p className="mb-3 text-sm font-semibold text-brand-900">Academic details (required for textbooks, past questions and lab materials)</p>
             <div className="grid gap-3 sm:grid-cols-3">
               <TextField label="Department" name="academic_department" defaultValue={product?.academic_department ?? ""} required error={fe?.academic_department} placeholder="e.g. Mathematics" />
               <SelectField label="Level" name="academic_level" defaultValue={product?.academic_level ?? ""} required error={fe?.academic_level}><option value="">Select level</option>{["100L","200L","300L","400L","500L"].map((v)=><option key={v}>{v}</option>)}</SelectField>
