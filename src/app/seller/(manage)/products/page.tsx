@@ -19,12 +19,12 @@ export default async function SellerProductsPage() {
 
   return (
     <>
-      <PageHeader title="My products" description="Create, edit and remove your listings." actions={<LinkButton href="/seller/products/new">Add product</LinkButton>} />
+      <PageHeader title="My products" description="Your listings are published immediately. Keep them accurate and up to date." actions={<LinkButton href="/seller/products/new">Add product</LinkButton>} />
       {products.length === 0 ? (
         <EmptyState
           icon={<Package className="size-10" aria-hidden />}
           title="You have no listings yet"
-          description="Add your first product with a few photos. It goes live after a quick review."
+          description="Add your first product with a few photos. It goes live as soon as you publish it."
           action={<LinkButton href="/seller/products/new">Add product</LinkButton>}
         />
       ) : (
