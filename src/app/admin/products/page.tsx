@@ -16,7 +16,8 @@ export const metadata: Metadata = { title: "Products" };
 
 export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const statusRaw = first((await searchParams).status);
-  const status = (PRODUCT_STATUSES as readonly string[]).includes(statusRaw ?? "") ? statusRaw! : "pending";
+  const visibleStatuses = PRODUCT_STATUSES.filter((value) => value !== "pending");
+  const status = visibleStatuses.includes(statusRaw as (typeof visibleStatuses)[number]) ? statusRaw! : "approved";
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -32,7 +33,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
     <>
       <PageHeader title="Listings & takedowns" description="Review older pending listings and take down listings that are unsafe, misleading or reported. New verified-seller listings publish automatically." />
       <nav aria-label="Status filter" className="mb-5 flex flex-wrap gap-2">
-        {PRODUCT_STATUSES.map((s) => (
+        {visibleStatuses.map((s) => (
           <Link
             key={s}
             href={`/admin/products?status=${s}`}
