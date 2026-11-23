@@ -53,6 +53,7 @@ export type SaveProductResult = ActionState & { productId?: string };
 /** Create (id = null) or update a listing. Changes always go back to review. */
 export async function saveProduct(id: string | null, formData: FormData): Promise<SaveProductResult> {
   const user = await requireUser("/seller/products");
+  if (!user.email_confirmed_at) return fail("Verify your email address before publishing products.");
 
   const roles = await getRoles(user.id);
   if (!roles.includes("seller")) return fail("Only approved sellers can list products.");
@@ -77,7 +78,7 @@ export async function saveProduct(id: string | null, formData: FormData): Promis
     academic_department: d.academic_department ?? null,
     academic_level: d.academic_level || null,
     course_code: d.course_code ?? null,
-    status: "pending" as const,
+    status: "approved" as const,
     moderation_note: null,
   };
 
