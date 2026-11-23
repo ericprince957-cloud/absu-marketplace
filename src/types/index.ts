@@ -188,3 +188,13 @@ export interface AdminStats {
   revenue_kobo: number;
   pending_applications: number;
 }
+
+
+export interface ProductComment {
+  id: string;
+  product_id: string;
+  author_id: string;
+  author_name: string;
+  body: string;
+  created_at: string;
+}
