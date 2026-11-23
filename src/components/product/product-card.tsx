@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ImageOff, MapPin } from "lucide-react";
+import { ArrowRight, ImageOff, MapPin, CalendarCheck } from "lucide-react";
 import { SaveButton } from "@/components/product/save-button";
 import { PRODUCT_CONDITIONS } from "@/config/site";
 import { formatNaira, publicImageUrl } from "@/lib/utils";
@@ -12,12 +12,13 @@ export function conditionLabel(value: string) {
 
 export function ProductCard({ product, saved, signedIn }: { product: Product; saved: boolean; signedIn: boolean }) {
   const cover = publicImageUrl(product.product_images?.[0]?.path);
+  const isService = product.categories?.slug === "services";
 
   return (
-    <article className="relative h-full">
+    <article className="relative flex h-full flex-col">
       <Link
         href={`/product/${product.id}`}
-        className="group flex h-full flex-col rounded-2xl bg-white p-2 shadow-sm ring-1 ring-stone-200 transition active:scale-[0.985] sm:hover:shadow-md"
+        className="group flex flex-1 flex-col rounded-2xl bg-white p-2 shadow-sm ring-1 ring-stone-200 transition active:scale-[0.985] sm:hover:shadow-md"
       >
         <div className="relative aspect-square overflow-hidden rounded-xl bg-stone-100">
           {cover ? (
@@ -37,7 +38,7 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
 
         <div className="flex flex-1 flex-col px-1.5 pb-1 pt-2.5">
           <h3 className="line-clamp-2 min-h-[2.5rem] font-sans text-[13.5px] font-medium leading-snug text-stone-900">{product.title}</h3>
-          {product.campus_area || product.hostel_name ? <p className="mt-1 truncate text-[10px] font-medium text-brand-700">{[product.campus_area,product.hostel_name].filter(Boolean).join(" · ")}</p> : null}
+          {product.campus_area || product.hostel_name ? <p className="mt-1 truncate text-[10px] font-medium text-brand-700">{[product.campus_area, product.hostel_name].filter(Boolean).join(" · ")}</p> : null}
           {product.location ? (
             <p className="mt-1 inline-flex items-center gap-1 truncate text-[11px] text-stone-500">
               <MapPin className="size-3 shrink-0" aria-hidden />
@@ -53,9 +54,18 @@ export function ProductCard({ product, saved, signedIn }: { product: Product; sa
         </div>
       </Link>
 
-      {/* Condition pill, like the discount tag in the reference */}
+      {isService ? (
+        <Link
+          href={`/product/${product.id}#order`}
+          className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-brand-900 px-3 py-2 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+        >
+          <CalendarCheck className="size-4" aria-hidden />
+          Book service
+        </Link>
+      ) : null}
+
       <span className="pointer-events-none absolute left-3.5 top-3.5 rounded-md bg-white/95 px-2 py-1 text-[10.5px] font-semibold text-brand-900 shadow-sm ring-1 ring-stone-200">
-        {conditionLabel(product.condition)}
+        {isService ? "Service" : conditionLabel(product.condition)}
       </span>
       <div className="absolute right-3.5 top-3.5">
         <SaveButton productId={product.id} saved={saved} signedIn={signedIn} />
