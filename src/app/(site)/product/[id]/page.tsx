@@ -37,6 +37,13 @@ export default async function ProductPage({ params }: { params: Params }) {
   const [user, seller] = await Promise.all([getUser(), getSellerPublic(product.seller_id)]);
   const saved = user ? (await getSavedProductIds(user.id, [product.id])).has(product.id) : false;
 
+  // Count a genuine product detail visit; the database excludes the seller and fires milestones.
+  if (product.status === "approved" && product.quantity > 0) {
+    const supabase = await import("@/lib/supabase/server").then((m) => m.createClient());
+    const { error: viewError } = await supabase.rpc("record_product_view", { p_product_id: product.id });
+    if (viewError) console.error("[product] record view failed:", viewError.message);
+  }
+
   const isOwner = user?.id === product.seller_id;
   const isLive = product.status === "approved" && product.quantity > 0;
   const images = (product.product_images ?? [])
