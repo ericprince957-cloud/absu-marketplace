@@ -134,3 +134,51 @@ export async function respondToItemRequest(formData: FormData): Promise<void> {
   revalidatePath(`/requests/${requestId}`);
   redirect("/requests?responded=1");
 }
+
+
+/** Add a comment to a public marketplace listing. */
+export async function addProductComment(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const user = await getUser();
+  if (!user) return fail("Please log in to comment.");
+  if (!user.email_confirmed_at) return fail("Verify your email before leaving a comment.");
+
+  const productId = String(formData.get("product_id") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+  if (!/^[0-9a-f-]{36}$/i.test(productId)) return fail("This listing could not be found.");
+  if (body.length < 1 || body.length > 1000) return fail("Comments must be between 1 and 1,000 characters.");
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("product_comments").insert({
+    product_id: productId,
+    author_id: user.id,
+    body,
+  });
+  if (error) {
+    if (error.code === "42501") return fail("You cannot comment on this listing. Check that your account is verified and active.");
+    console.error("[actions] addProductComment failed:", error.message);
+    return fail("We could not post your comment. Please try again.");
+  }
+
+  revalidatePath("/product/" + productId);
+  return success("Your comment has been posted.");
+}
+
+/** Authors can remove their own comments; admins can remove comments for moderation. */
+export async function deleteProductComment(formData: FormData): Promise<void> {
+  const user = await getUser();
+  const commentId = String(formData.get("comment_id") ?? "").trim();
+  const productId = String(formData.get("product_id") ?? "").trim();
+  if (!user || !/^[0-9a-f-]{36}$/i.test(commentId) || !/^[0-9a-f-]{36}$/i.test(productId)) return;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("product_comments")
+    .delete()
+    .eq("id", commentId)
+    .eq("product_id", productId);
+  if (error) {
+    console.error("[actions] deleteProductComment failed:", error.message);
+    return;
+  }
+  revalidatePath("/product/" + productId);
+}
