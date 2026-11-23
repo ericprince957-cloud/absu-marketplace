@@ -176,7 +176,7 @@ export function ProductForm({ userId, categories, product }: { userId: string; c
         <Button type="button" variant="ghost" size="lg" onClick={() => router.push("/seller/products")} disabled={pending}>
           Cancel
         </Button>
-        <p className="text-xs text-stone-500">New and edited listings are reviewed before they appear publicly.</p>
+        <p className="text-xs text-stone-500">Your listing goes live immediately after saving. Keep details and photos accurate.</p>
       </div>
     </form>
   );
