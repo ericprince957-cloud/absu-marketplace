@@ -154,6 +154,7 @@ export async function addProductComment(_prev: ActionState, formData: FormData):
     body,
   });
   if (error) {
+    if (error.message.includes("email_verification_required")) return fail("Verify your email before leaving a comment.");
     if (error.code === "42501") return fail("You cannot comment on this listing. Check that your account is verified and active.");
     console.error("[actions] addProductComment failed:", error.message);
     return fail("We could not post your comment. Please try again.");
