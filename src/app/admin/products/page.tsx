@@ -30,7 +30,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
 
   return (
     <>
-      <PageHeader title="Product moderation" description="Approve good listings and reject anything unsafe, misleading or against the rules." />
+      <PageHeader title="Listings & takedowns" description="Review older pending listings and take down listings that are unsafe, misleading or reported. New verified-seller listings publish automatically." />
       <nav aria-label="Status filter" className="mb-5 flex flex-wrap gap-2">
         {PRODUCT_STATUSES.map((s) => (
           <Link
