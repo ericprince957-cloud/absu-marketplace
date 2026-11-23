@@ -59,18 +59,22 @@ export async function updateOrderStatus(formData: FormData): Promise<void> {
   revalidatePath("/seller/sales");
 }
 
-export async function markNotificationRead(notificationId: string): Promise<void> {
+export async function markNotificationRead(notificationId: string): Promise<boolean> {
   const user = await requireUser("/dashboard/notifications");
-  if (!/^[0-9a-f-]{36}$/i.test(notificationId)) return;
+  if (!/^[0-9a-f-]{36}$/i.test(notificationId)) return false;
   const supabase = await createClient();
   const { error } = await supabase
     .from("notifications")
     .update({ is_read: true })
     .eq("id", notificationId)
     .eq("user_id", user.id);
-  if (error) console.error("[actions] markNotificationRead failed:", error.message);
+  if (error) {
+    console.error("[actions] markNotificationRead failed:", error.message);
+    return false;
+  }
   revalidatePath("/dashboard/notifications");
   revalidatePath("/dashboard", "layout");
+  return true;
 }
 
 export async function markNotificationsRead(): Promise<void> {
