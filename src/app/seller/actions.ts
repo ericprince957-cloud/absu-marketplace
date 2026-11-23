@@ -43,7 +43,7 @@ export async function submitSellerApplication(_prev: ActionState, formData: Form
   }
 
   revalidatePath("/seller/apply");
-  return success("Application submitted. We will review it and notify you.");
+  return success("Seller request submitted. Admins have been notified, and you will receive an in-app notification when it is reviewed.");
 }
 
 // -------------------------------------------------------------------- products
