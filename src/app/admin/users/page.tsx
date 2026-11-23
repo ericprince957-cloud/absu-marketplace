@@ -73,7 +73,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                 return (
                   <tr key={u.id}>
                     <Td>
-                      <p className="font-medium">{u.full_name ?? "-"}</p>
+                      {isSeller ? <Link href={`/store/${u.id}`} className="font-medium text-brand-800 underline-offset-4 hover:underline">{u.full_name ?? "Seller profile"}</Link> : <p className="font-medium">{u.full_name ?? "-"}</p>}
                       <p className="text-xs text-stone-500">{u.email}</p>
                       {u.is_suspended ? <Badge tone="red">suspended</Badge> : null}
                     </Td>
