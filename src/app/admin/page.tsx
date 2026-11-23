@@ -21,9 +21,9 @@ export default async function AdminOverviewPage() {
         <Alert tone="error" title="Statistics unavailable">Could not load statistics. Check that the admin_stats() database function exists.</Alert>
       ) : (
         <div className="space-y-8">
-          {s.pending_applications > 0 || s.products_pending > 0 ? (
-            <Alert tone="warning" title="Waiting for you">
-              {s.pending_applications} seller application(s) and {s.products_pending} product(s) need review.
+          {s.pending_applications > 0 ? (
+            <Alert tone="warning" title="Seller applications need attention">
+              {s.pending_applications} seller application(s) are waiting for your review.
             </Alert>
           ) : null}
 
@@ -50,7 +50,6 @@ export default async function AdminOverviewPage() {
             <h2 className="mb-3 text-lg font-bold">Marketplace</h2>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               <Stat label="Products" value={s.products_total} />
-              <Stat label="Awaiting review" value={s.products_pending} />
               <Stat label="Orders" value={s.orders_total} />
               <Stat label="Completed orders" value={s.orders_completed} />
             </div>
