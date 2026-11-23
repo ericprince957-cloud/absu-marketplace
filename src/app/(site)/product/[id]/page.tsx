@@ -8,12 +8,13 @@ import { ProductGallery } from "@/components/product/product-gallery";
 import { SaveButton } from "@/components/product/save-button";
 import { SellerContact } from "@/components/product/seller-contact";
 import { ReportSeller } from "@/components/product/report-seller";
+import { ProductComments } from "@/components/product/product-comments";
 import { RecentlyViewed } from "@/components/layout/recently-viewed";
 import { Card } from "@/components/ui/card";
 import { Alert, Badge } from "@/components/ui/feedback";
 import { LinkButton } from "@/components/ui/button";
-import { getUser } from "@/lib/auth";
-import { getProduct, getSavedProductIds, getSellerPublic } from "@/lib/data/products";
+import { getRoles, getUser } from "@/lib/auth";
+import { getProduct, getSavedProductIds, getSellerPublic, listProductComments } from "@/lib/data/products";
 import { formatDate, formatNaira, initials, publicImageUrl } from "@/lib/utils";
 
 type Params = Promise<{ id: string }>;
@@ -34,7 +35,12 @@ export default async function ProductPage({ params }: { params: Params }) {
   const product = await getProduct(id);
   if (!product) notFound();
 
-  const [user, seller] = await Promise.all([getUser(), getSellerPublic(product.seller_id)]);
+  const [user, seller, comments] = await Promise.all([
+    getUser(),
+    getSellerPublic(product.seller_id),
+    product.status === "approved" ? listProductComments(product.id) : Promise.resolve([]),
+  ]);
+  const roles = user ? await getRoles(user.id) : [];
   const saved = user ? (await getSavedProductIds(user.id, [product.id])).has(product.id) : false;
 
   // Count a genuine product detail visit; the database excludes the seller and fires milestones.
@@ -155,6 +161,16 @@ export default async function ProductPage({ params }: { params: Params }) {
           </p>
         </div>
       </div>
+      {product.status === "approved" ? (
+        <ProductComments
+          productId={product.id}
+          comments={comments}
+          currentUserId={user?.id ?? null}
+          canComment={Boolean(user?.email_confirmed_at)}
+          isAdmin={roles.includes("admin")}
+          loginHref={"/login?next=" + encodeURIComponent("/product/" + product.id)}
+        />
+      ) : null}
       {isLive && !isOwner ? (
         <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-white/95 px-4 pt-3 backdrop-blur lg:hidden">
           <div className="mx-auto flex max-w-2xl items-center gap-3 pb-3">
