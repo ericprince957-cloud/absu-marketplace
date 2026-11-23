@@ -1,6 +1,6 @@
 # ABSU Trade
 
-ABSU Trade is an independent student marketplace for the Abia State University (ABSU) community in Uturu, Abia State, Nigeria. Anyone can browse and search publicly visible products for free. Buyers can contact sellers and arrange purchases directly on WhatsApp without an account. Approved sellers can list items with photos and manage their storefronts.
+ABSU Trade is an independent student marketplace for the Abia State University (ABSU) community in Uturu, Abia State, Nigeria. Anyone can browse and search publicly visible products for free. Buyers can contact sellers and arrange purchases directly on WhatsApp without an account. Email-verified sellers with active seller access can publish products immediately—there is no product-by-product approval queue. Admins can still remove listings that break marketplace rules.
 
 **Seller access:** the first 50 approved sellers receive lifetime-free access. Every approved seller after that pays **NGN 1,500 for 30 days** through Paystack. Buyers never pay a subscription or platform fee.
 
@@ -40,7 +40,8 @@ Scripts: `npm run typecheck` · `npm run lint` · `npm test` · `npm run build`
 - Buyers and ordinary account registrations never consume seller launch slots.
 - The allocation is atomic and capped at 50.
 - Approved sellers after the first 50 pay NGN 1,500 for 30 days of seller access.
-- Seller access controls creating and managing listings and uploading product photos.
+- Email verification, seller approval and active seller membership control creating and managing listings and uploading product photos.
+- New and edited listings from eligible, email-verified sellers publish immediately; admins retain the ability to take down unsafe or misleading listings.
 - Buyers can browse, search, contact sellers on WhatsApp and buy products for free. No buyer account or subscription is required for WhatsApp purchases.
 - Signed-in buyers can optionally submit order requests; these do not require seller access. Item payments are arranged directly between buyer and seller.
 - Returning from Paystack checkout does not grant seller access. The server verifies the transaction with Paystack first.
