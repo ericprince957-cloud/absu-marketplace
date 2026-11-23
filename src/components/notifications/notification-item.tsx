@@ -3,10 +3,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check } from "lucide-react";
 import { markNotificationRead } from "@/app/dashboard/actions";
 import { Card } from "@/components/ui/card";
-import { cn, formatDateTime } from "@/lib/utils";
+import { formatDateTime } from "@/lib/utils";
 import type { Notification } from "@/types";
 
 export function NotificationItem({ notification }: { notification: Notification }) {
@@ -33,7 +32,7 @@ export function NotificationItem({ notification }: { notification: Notification 
 
   return (
     <li>
-      <Card className={cn("overflow-hidden p-0 transition-colors", "border-brand-300 bg-brand-50/50")}>
+      <Card className="overflow-hidden border-brand-300 bg-brand-50/50 p-0 transition-colors">
         <button type="button" onClick={toggleMessage} aria-expanded={open} className="w-full p-4 text-left">
           <span className="flex items-start justify-between gap-3">
             <span className="min-w-0">
