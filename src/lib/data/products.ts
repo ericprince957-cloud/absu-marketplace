@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { PAGE_SIZE } from "@/config/site";
 import { sanitizeSearch } from "@/lib/utils";
-import type { Product, ProductCondition, SellerPublic } from "@/types";
+import type { Product, ProductCondition, ProductComment, SellerPublic } from "@/types";
 
 export const PRODUCT_SELECT =
   "*, categories(id,name,slug), product_images(id,product_id,path,position)";
@@ -151,4 +151,22 @@ export async function getSellerContact(
   }
   const row = Array.isArray(data) ? data[0] : data;
   return row ?? null;
+}
+
+
+/** Public comments for an approved product listing. */
+export async function listProductComments(productId: string): Promise<ProductComment[]> {
+  if (!isUuid(productId)) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("product_comments")
+    .select("id,product_id,author_id,author_name,body,created_at")
+    .eq("product_id", productId)
+    .order("created_at", { ascending: true })
+    .limit(100);
+  if (error) {
+    console.error("[data] listProductComments failed:", error.message);
+    return [];
+  }
+  return (data ?? []) as ProductComment[];
 }
