@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 {initials(seller?.display_name)}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-bold text-stone-950">{seller?.display_name ?? "ABSU student seller"}</p>
+                {seller ? <Link href={`/store/${seller.id}`} className="truncate font-bold text-stone-950 underline-offset-4 hover:text-brand-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600">{seller.display_name ?? "ABSU student seller"}</Link> : <p className="truncate font-bold text-stone-950">ABSU student seller</p>}
                 <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-stone-500">
                   <ShieldCheck className="size-3.5 text-emerald-600" aria-hidden />
                   Marketplace seller{seller ? ` · joined ${formatDate(seller.created_at)}` : ""}
