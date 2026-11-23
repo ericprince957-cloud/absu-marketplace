@@ -5,7 +5,7 @@ import { grantFreeSlot, setUserSuspended } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { PageHeader, TableWrap, Td, Th } from "@/components/ui/card";
-import { Badge, EmptyState } from "@/components/ui/feedback";
+import { Alert, Badge, EmptyState } from "@/components/ui/feedback";
 import { filterControl } from "@/components/ui/field";
 import { Pagination } from "@/components/ui/pagination";
 import { createClient } from "@/lib/supabase/server";
@@ -30,7 +30,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   const supabase = await createClient();
   let req = supabase
     .from("profiles")
-    .select("*, user_roles(role), membership_entitlements(kind,status,paid_until,free_slot_number), seller_applications(status)", { count: "exact" })
+    .select("*, user_roles(role), membership_entitlements(kind,status,paid_until,free_slot_number), seller_applications!seller_applications_user_id_fkey(status)", { count: "exact" })
     .order("created_at", { ascending: false });
   if (q) req = req.or(`full_name.ilike.%${q}%,email.ilike.%${q}%,phone.ilike.%${q}%`);
   const { data, count, error } = await req.range((page - 1) * SIZE, page * SIZE - 1);
@@ -49,8 +49,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
         <Button type="submit" size="sm">Search</Button>
       </form>
 
-      {rows.length === 0 ? (
-        <EmptyState title="No users found" />
+      {error ? (
+        <Alert tone="error" title="Could not load users">The users query failed. Please refresh; if this continues, check the server logs. ({error.code})</Alert>
+      ) : rows.length === 0 ? (
+        <EmptyState title={q ? "No users match your search" : "No registered users found"} />
       ) : (
         <>
           <TableWrap>
