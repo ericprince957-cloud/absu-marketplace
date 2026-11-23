@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { reviewSellerApplication } from "@/app/admin/actions";
 import { Card, PageHeader } from "@/components/ui/card";
 import { EmptyState, StatusBadge } from "@/components/ui/feedback";
@@ -26,7 +27,7 @@ export default async function AdminSellersPage() {
         {pending.length === 0 ? <EmptyState title="No applications waiting" /> : pending.map((a) => (
           <Card key={a.id} className="space-y-3">
             <div className="flex flex-wrap items-start justify-between gap-2">
-              <div><p className="font-semibold">{a.profiles?.full_name ?? "Name not provided"}</p><p className="text-xs text-stone-500">{a.profiles?.email ?? "No email"} · applied {formatDateTime(a.created_at)}</p></div>
+              <div><Link href={`/store/${a.user_id}`} className="font-semibold text-brand-800 underline-offset-4 hover:underline">{a.profiles?.full_name ?? "Name not provided"}</Link><p className="text-xs text-stone-500">{a.profiles?.email ?? "No email"} · applied {formatDateTime(a.created_at)}</p></div>
               <StatusBadge status={a.status} />
             </div>
             <div className="grid gap-2 rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm sm:grid-cols-2">
@@ -49,7 +50,7 @@ export default async function AdminSellersPage() {
           </Card>
         ))}
       </section>
-      {done.length > 0 ? <section className="mt-10 space-y-3"><h2 className="text-lg font-bold">Reviewed</h2>{done.map((a) => <div key={a.id} className="flex justify-between rounded-xl border border-stone-200 bg-white p-3 text-sm"><span>{a.business_name} · {a.profiles?.full_name}</span><StatusBadge status={a.status} /></div>)}</section> : null}
+      {done.length > 0 ? <section className="mt-10 space-y-3"><h2 className="text-lg font-bold">Reviewed</h2>{done.map((a) => <div key={a.id} className="flex justify-between rounded-xl border border-stone-200 bg-white p-3 text-sm"><span>{a.business_name} · <Link href={`/store/${a.user_id}`} className="font-semibold text-brand-800 underline-offset-4 hover:underline">{a.profiles?.full_name ?? "View profile"}</Link></span><StatusBadge status={a.status} /></div>)}</section> : null}
     </>
   );
 }
