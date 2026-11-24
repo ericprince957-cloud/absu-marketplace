@@ -8,7 +8,17 @@ type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const category = await getCategoryBySlug((await params).slug);
-  return category ? { title: category.name, description: category.description ?? undefined } : { title: "Category" };
+  if (!category) return { title: "Category", robots: { index: false, follow: true } };
+  const categoryDescription = category.description?.trim();
+  const description = categoryDescription && categoryDescription.length >= 70
+    ? categoryDescription.slice(0, 160)
+    : `Browse ${category.name.toLowerCase()} listed by students at Abia State University, Uturu. Compare available items and contact sellers on ABSU Trade.`;
+  return {
+    title: `${category.name} for sale at ABSU`,
+    description,
+    alternates: { canonical: `/category/${category.slug}` },
+    openGraph: { title: `${category.name} at ABSU Trade`, description, type: "website" },
+  };
 }
 
 export default async function CategoryPage({
