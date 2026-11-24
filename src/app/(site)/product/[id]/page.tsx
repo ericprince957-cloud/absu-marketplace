@@ -23,10 +23,24 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const product = await getProduct((await params).id);
   if (!product) return { title: "Product not found" };
   const image = publicImageUrl(product.product_images?.[0]?.path);
+  const description = product.description.replace(/\\s+/g, " ").trim().slice(0, 155);
+  const isPublicListing = product.status === "approved" && product.quantity > 0;
   return {
     title: product.title,
-    description: product.description.slice(0, 155),
-    openGraph: { title: product.title, description: product.description.slice(0, 155), images: image ? [image] : undefined },
+    description,
+    alternates: { canonical: `/product/${product.id}` },
+    robots: {
+      index: isPublicListing,
+      follow: isPublicListing,
+      googleBot: { index: isPublicListing, follow: isPublicListing },
+    },
+    openGraph: {
+      title: product.title,
+      description,
+      url: `/product/${product.id}`,
+      type: "website",
+      images: image ? [image] : undefined,
+    },
   };
 }
 
