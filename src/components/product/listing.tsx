@@ -4,11 +4,10 @@ import { ProductFilters, type FilterValues } from "@/components/product/product-
 import { ProductGrid } from "@/components/product/product-grid";
 import { EmptyState } from "@/components/ui/feedback";
 import { LinkButton } from "@/components/ui/button";
-import { Pagination } from "@/components/ui/pagination";
-import { PAGE_SIZE, PRODUCT_CONDITIONS } from "@/config/site";
+import { PRODUCT_CONDITIONS } from "@/config/site";
 import { listCategories } from "@/lib/data/categories";
 import { listProducts, type ProductQuery, type ProductSort } from "@/lib/data/products";
-import { first, pageNumber } from "@/lib/utils";
+import { first } from "@/lib/utils";
 import type { ProductCondition } from "@/types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -53,12 +52,13 @@ export function parseListingParams(sp: SearchParams): { query: ProductQuery; val
       academicLevel: values.academic_level,
       courseCode: values.course_code,
       sort,
-      page: pageNumber(sp.page),
+      page: 1,
+      pageSize: 1000,
     },
   };
 }
 
-/** Filter bar + results grid + pagination, shared by marketplace, search and category pages. */
+/** Filter bar + complete results grid, shared by marketplace, search and category pages. */
 export async function Listing({
   basePath,
   searchParams,
@@ -85,16 +85,7 @@ export async function Listing({
       </p>
 
       {products.length > 0 ? (
-        <>
-          <ProductGrid products={products} />
-          <Pagination
-            page={query.page ?? 1}
-            pageSize={PAGE_SIZE}
-            total={total}
-            basePath={basePath}
-            params={{ q: values.q, category: values.category, min: values.min, max: values.max, condition: values.condition, campus_area: values.campus_area, hostel_name: values.hostel_name, academic_department: values.academic_department, academic_level: values.academic_level, course_code: values.course_code, sort: values.sort }}
-          />
-        </>
+        <ProductGrid products={products} />
       ) : (
         <EmptyState
           icon={<PackageSearch className="size-10" aria-hidden />}
