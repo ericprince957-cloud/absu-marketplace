@@ -65,32 +65,42 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="about-marketplace-heading" className="max-w-3xl space-y-3">
-        <div>
-          <h2 id="about-marketplace-heading" className="text-xl font-semibold text-brand-950 sm:text-2xl">
-            A student marketplace for ABSU and Uturu
-          </h2>
-          <p className="mt-2 text-sm leading-7 text-stone-600 sm:text-base">
-            ABSU Trade connects buyers with students and local sellers around Abia State University, Uturu.
-            Browse available products and services, compare listing details, and contact sellers directly.
-            Whether you need a phone, textbook, outfit, meal, hostel essential or a campus service, start by
-            searching the marketplace or exploring a category.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold text-brand-950">Buy locally. Sell to the campus community.</h3>
-          <p className="mt-2 text-sm leading-7 text-stone-600 sm:text-base">
-            Students can create a seller account, publish listings with photos and prices, and reach people
-            already looking around ABSU. Buyers can browse without paying a membership fee, review each
-            listing, ask the seller questions and arrange a safe handover. Meet in a public place, inspect
-            an item before paying, and never send money in advance to someone you do not know.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-          <Link href="/marketplace" className="text-brand-800 underline-offset-4 hover:underline">Browse ABSU listings</Link>
-          <Link href="/requests" className="text-brand-800 underline-offset-4 hover:underline">See what students need</Link>
-          <Link href="/seller/apply" className="text-brand-800 underline-offset-4 hover:underline">Start selling on ABSU Trade</Link>
-        </div>
+      <section className="max-w-3xl">
+        <details className="group rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm sm:px-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-brand-900 marker:hidden [&::-webkit-details-marker]:hidden">
+            <span>About ABSU Trade</span>
+            <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-full bg-sage text-brand-900 transition-transform group-open:rotate-180">
+              <ArrowRight className="size-4 rotate-90" />
+            </span>
+          </summary>
+          <div className="space-y-4 border-t border-stone-100 pt-4 mt-3">
+            <div>
+              <h2 className="text-lg font-semibold text-brand-950 sm:text-xl">
+                A student marketplace for ABSU and Uturu
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-stone-600 sm:text-base">
+                ABSU Trade connects buyers with students and local sellers around Abia State University, Uturu.
+                Browse available products and services, compare listing details, and contact sellers directly.
+                Whether you need a phone, textbook, outfit, meal, hostel essential or a campus service, start by
+                searching the marketplace or exploring a category.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-brand-950">Buy locally. Sell to the campus community.</h3>
+              <p className="mt-2 text-sm leading-7 text-stone-600 sm:text-base">
+                Students can create a seller account, publish listings with photos and prices, and reach people
+                already looking around ABSU. Buyers can browse without paying a membership fee, review each
+                listing, ask the seller questions and arrange a safe handover. Meet in a public place, inspect
+                an item before paying, and never send money in advance to someone you do not know.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+              <Link href="/marketplace" className="text-brand-800 underline-offset-4 hover:underline">Browse ABSU listings</Link>
+              <Link href="/requests" className="text-brand-800 underline-offset-4 hover:underline">See what students need</Link>
+              <Link href="/seller/apply" className="text-brand-800 underline-offset-4 hover:underline">Start selling on ABSU Trade</Link>
+            </div>
+          </div>
+        </details>
       </section>
 
       {/* Categories */}
