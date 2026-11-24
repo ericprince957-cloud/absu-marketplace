@@ -76,7 +76,7 @@ export async function placeOrder(_prev: ActionState, formData: FormData): Promis
     "Delivery / pickup address: " + parsed.data.delivery_address,
     parsed.data.note ? "Note: " + parsed.data.note : "",
     "Please confirm my order. https://absutrade.com.ng/dashboard/orders",
-  ].filter(Boolean).join("\\n");
+  ].filter(Boolean).join("\n");
   const whatsappUrl = whatsapp ? "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message) : undefined;
 
   revalidatePath("/dashboard/orders");
