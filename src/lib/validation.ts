@@ -20,7 +20,7 @@ export const sellerApplicationSchema = z.object({
   phone,
   location: z.string().trim().min(2, "Enter your hostel, street or pickup area").max(120),
 });
-export const orderSchema = z.object({ product_id: z.string().uuid(), quantity: z.coerce.number().int().min(1, "At least 1").max(100), note: optionalText(300) });
+export const orderSchema = z.object({ product_id: z.string().uuid(), quantity: z.coerce.number().int().min(1, "At least 1").max(100), delivery_address: z.string().trim().min(5, "Enter your hostel, street, landmark or preferred campus pickup point").max(250, "Keep the address under 250 characters"), note: optionalText(300) });
 export const categorySchema = z.object({ name: z.string().trim().min(2, "Name is too short").max(50), slug: z.string().trim().toLowerCase().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and hyphens only"), description: optionalText(200), sort_order: z.coerce.number().int().min(0).max(1000).default(0) });
 export const contactSchema = z.object({ name: z.string().trim().min(2, "Enter your name").max(80), email: z.string().trim().toLowerCase().email("Enter a valid email address"), subject: z.string().trim().min(3, "Add a subject").max(120), message: z.string().trim().min(10, "Message is too short").max(2000) });
 export const moderationSchema = z.object({ product_id: z.string().uuid(), status: z.enum(PRODUCT_STATUSES), note: optionalText(300) });
