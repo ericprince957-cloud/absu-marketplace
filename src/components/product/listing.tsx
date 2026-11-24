@@ -79,11 +79,6 @@ export async function Listing({
       <CategoryChips categories={categories} activeId={lockedCategoryId ?? values.category} />
       <ProductFilters action={basePath} categories={categories} values={values} lockedCategory={Boolean(lockedCategoryId)} />
 
-      <p className="text-sm text-stone-600" aria-live="polite">
-        {total === 0 ? "No products found" : `${total} product${total === 1 ? "" : "s"}`}
-        {values.q ? <> for <strong className="text-stone-900">&ldquo;{values.q}&rdquo;</strong></> : null}
-      </p>
-
       {products.length > 0 ? (
         <ProductGrid products={products} />
       ) : (
