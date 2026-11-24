@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const product = await getProduct((await params).id);
   if (!product) return { title: "Product not found" };
   const image = publicImageUrl(product.product_images?.[0]?.path);
-  const description = product.description.replace(/\\s+/g, " ").trim().slice(0, 155);
+  const description = product.description.replace(/\s+/g, " ").trim().slice(0, 155);
   const isPublicListing = product.status === "approved" && product.quantity > 0;
   return {
-    title: product.title,
+    title: `${product.title} | ${formatNaira(product.price)}`,
     description,
     alternates: { canonical: `/product/${product.id}` },
     robots: {
@@ -70,8 +70,32 @@ export default async function ProductPage({ params }: { params: Params }) {
     .map((i) => ({ id: i.id, url: publicImageUrl(i.path) }))
     .filter((i): i is { id: string; url: string } => Boolean(i.url));
   const cover = publicImageUrl(product.product_images?.[0]?.path);
+  const productStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description.replace(/\s+/g, " ").trim().slice(0, 5000),
+    image: images.map((item) => item.url),
+    sku: product.id,
+    category: product.categories?.name,
+    itemCondition: product.condition === "new"
+      ? "https://schema.org/NewCondition"
+      : product.condition === "like_new"
+        ? "https://schema.org/UsedCondition"
+        : "https://schema.org/UsedCondition",
+    offers: {
+      "@type": "Offer",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.absutrade.com.ng"}/product/${product.id}`,
+      priceCurrency: "NGN",
+      price: product.price,
+      availability: isLive ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: "ABSU Trade marketplace seller" },
+    },
+  };
 
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productStructuredData).replace(/</g, "\\u003c") }} />
     <div className="space-y-8 pb-24 lg:pb-6">
       <RecentlyViewed current={{ id: product.id, title: product.title, price: product.price, image: cover }} show={false} />
       <div className="grid gap-7 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
@@ -199,5 +223,6 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       ) : null}
     </div>
+    </>
   );
 }
