@@ -8,7 +8,10 @@ import { getUser } from "@/lib/auth";
 import { getFreeSlotsRemaining } from "@/lib/data/membership";
 import { formatNaira } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Create account" };
+export const metadata: Metadata = {
+  title: "Create account",
+  robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+};
 
 export default async function RegisterPage() {
   if (await getUser()) redirect("/dashboard");
