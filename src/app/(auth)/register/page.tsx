@@ -10,6 +10,7 @@ import { formatNaira } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Create account",
+  description: "Create an ABSU Trade account to discover campus listings or start selling at Abia State University, Uturu.",
   robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
 };
 
