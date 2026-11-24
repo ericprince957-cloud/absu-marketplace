@@ -6,7 +6,10 @@ import { Alert } from "@/components/ui/feedback";
 import { getUser } from "@/lib/auth";
 import { first, safeNextPath } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Log in" };
+export const metadata: Metadata = {
+  title: "Log in",
+  robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+};
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
