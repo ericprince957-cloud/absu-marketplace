@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
+import { PromoBanner } from "@/components/layout/promo-banner";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { ConfigNotice } from "@/components/layout/config-notice";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -14,6 +15,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
     <div className="pb-tabbar">
       <ConfigNotice />
       <AnnouncementBar />
+      <PromoBanner />
       <SiteHeader />
       <main id="main" className="mx-auto min-h-[60vh] max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
         {children}
