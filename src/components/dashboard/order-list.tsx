@@ -49,7 +49,7 @@ export function OrderList({ orders, as }: { orders: Order[]; as: "buyer" | "sell
               ))}
             </ul>
 
-            {o.note ? <p className="rounded-xl bg-stone-50 p-3 text-sm text-stone-700"><span className="font-medium">Note:</span> {o.note}</p> : null}
+            {o.delivery_address ? <p className="rounded-xl bg-stone-50 p-3 text-sm text-stone-700"><span className="font-medium">Delivery / pickup address:</span> {o.delivery_address}</p> : null}\n            {o.note ? <p className="rounded-xl bg-stone-50 p-3 text-sm text-stone-700"><span className="font-medium">Note:</span> {o.note}</p> : null}
 
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-display text-lg font-bold">Total {formatNaira(o.total)}</p>
