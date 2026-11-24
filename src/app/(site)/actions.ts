@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getRoles, getUser, requireUser } from "@/lib/auth";
 import { fail, success, type ActionState } from "@/lib/action-state";
 import { contactSchema, formToObject, orderSchema, validationFailure } from "@/lib/validation";
+import { toWhatsAppNumber, formatNaira } from "@/lib/utils";
 
 /** Save or unsave a product for the logged-in user. */
 export async function toggleSaved(productId: string): Promise<{ ok: boolean }> {
@@ -41,10 +42,15 @@ export async function placeOrder(_prev: ActionState, formData: FormData): Promis
   if (!parsed.success) return validationFailure(parsed.error);
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("place_order", {
+  const [{ data: product }, { data: contact }] = await Promise.all([
+    supabase.from("products").select("title,price").eq("id", parsed.data.product_id).maybeSingle(),
+    supabase.rpc("get_seller_contact", { p_product_id: parsed.data.product_id }),
+  ]);
+  const { data: orderId, error } = await supabase.rpc("place_order", {
     p_product_id: parsed.data.product_id,
     p_quantity: parsed.data.quantity,
     p_note: parsed.data.note ?? null,
+    p_delivery_address: parsed.data.delivery_address,
   });
 
   if (error) {
@@ -53,12 +59,29 @@ export async function placeOrder(_prev: ActionState, formData: FormData): Promis
     if (m.includes("own_product")) return fail("You cannot order your own product.");
     if (m.includes("out_of_stock")) return fail("Not enough stock available for that quantity.");
     if (m.includes("not_available")) return fail("This product is no longer available.");
+    if (m.includes("invalid_delivery_address")) return fail("Enter a valid delivery or pickup address.");
     console.error("[actions] place_order failed:", m);
     return fail("We could not place your order. Please try again.");
   }
 
+  const sellerContact = Array.isArray(contact) ? contact[0] : contact;
+  const whatsapp = toWhatsAppNumber(sellerContact?.whatsapp);
+  const total = Number(product?.price ?? 0) * parsed.data.quantity;
+  const message = [
+    "Hello! I just placed an order on ABSU Trade.",
+    "Order: #" + String(orderId ?? "").slice(0, 8).toUpperCase(),
+    "Item: " + (product?.title ?? "Marketplace item"),
+    "Quantity: " + parsed.data.quantity,
+    "Total: " + formatNaira(total),
+    "Delivery / pickup address: " + parsed.data.delivery_address,
+    parsed.data.note ? "Note: " + parsed.data.note : "",
+    "Please confirm my order. https://absutrade.com.ng/dashboard/orders",
+  ].filter(Boolean).join("\\n");
+  const whatsappUrl = whatsapp ? "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message) : undefined;
+
   revalidatePath("/dashboard/orders");
-  return success("Order sent. The seller has been notified. Track it under My orders.");
+  revalidatePath("/seller/orders");
+  return { ok: true, message: "Order placed successfully. It is saved in ABSU Trade and the seller has received an in-app notification.", whatsappUrl };
 }
 
 /** Public contact form. Stored in `support_messages` (insert-only for visitors). */
