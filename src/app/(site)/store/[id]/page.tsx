@@ -10,7 +10,17 @@ type Params = Promise<{ id: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const seller = await getSellerPublic((await params).id);
-  return { title: seller?.display_name ? `${seller.display_name} Storefront` : "Seller storefront" };
+  if (!seller) return { title: "Seller storefront", robots: { index: false, follow: true } };
+  const title = `${seller.display_name ?? "Student seller"} on ABSU Trade`;
+  const description = seller.bio?.trim()
+    ? `${seller.bio.trim().slice(0, 105)} Browse this seller's available listings on ABSU Trade in Uturu.`.slice(0, 160)
+    : `Browse products and services listed by ${seller.display_name ?? "an ABSU student seller"} at Abia State University, Uturu.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `/store/${seller.id}` },
+    openGraph: { title, description, type: "website" },
+  };
 }
 
 export default async function StorefrontPage({ params }: { params: Params }) {
