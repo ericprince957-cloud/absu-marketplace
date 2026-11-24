@@ -2,8 +2,8 @@ export const siteConfig = {
   name: "ABSU Trade",
   shortName: "ABSU Trade",
   description:
-    "ABSU Trade is the student marketplace for Abia State University (ABSU), Uturu, Nigeria. Discover and buy textbooks, gadgets, fashion, food, hostel essentials and student services, or list products for fellow ABSU students.",
-  url: "https://absutrade.com.ng",
+    "Buy and sell around Abia State University in Uturu. Discover student-listed textbooks, gadgets, fashion, food, hostel essentials and local services on ABSU Trade.",
+  url: "https://www.absutrade.com.ng",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "",
 } as const;
 
