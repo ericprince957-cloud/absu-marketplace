@@ -8,6 +8,7 @@ import { first, safeNextPath } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Log in",
+  description: "Log in to your ABSU Trade account to manage your listings, orders and campus marketplace activity.",
   robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
 };
 
