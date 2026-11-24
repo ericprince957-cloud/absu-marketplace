@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Search } from "lucide-react";
-import { grantFreeSlot, setUserSuspended } from "@/app/admin/actions";
+import { grantFreeSlot, setUserSuspended, verifyUserAndNotify } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { ConfirmButton } from "@/components/ui/confirm-button";
 import { PageHeader, TableWrap, Td, Th } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Alert, Badge, EmptyState } from "@/components/ui/feedback";
 import { filterControl } from "@/components/ui/field";
 import { Pagination } from "@/components/ui/pagination";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { first, formatDate, pageNumber, sanitizeSearch } from "@/lib/utils";
 import type { MembershipEntitlement, Profile, Role } from "@/types";
 
@@ -36,6 +37,9 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   const { data, count, error } = await req.range((page - 1) * SIZE, page * SIZE - 1);
   if (error) console.error("[admin] users failed:", error.message);
   const rows = (data ?? []) as unknown as Row[];
+  const adminClient = createAdminClient();
+  const authResults = await Promise.all(rows.map((u) => adminClient.auth.admin.getUserById(u.id)));
+  const emailVerifiedById = new Map(rows.map((u, i) => [u.id, authResults[i].error ? null : Boolean(authResults[i].data.user?.email_confirmed_at)]));
 
   return (
     <>
@@ -59,6 +63,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             <thead>
               <tr>
                 <Th>User</Th>
+                <Th>Email status</Th>
                 <Th>Roles</Th>
                 <Th>Membership</Th>
                 <Th>Joined</Th>
@@ -78,6 +83,9 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                       {u.is_suspended ? <Badge tone="red">suspended</Badge> : null}
                     </Td>
                     <Td>
+                      {emailVerifiedById.get(u.id) === true ? <Badge tone="green">verified</Badge> : emailVerifiedById.get(u.id) === false ? <Badge tone="amber">unverified</Badge> : <Badge tone="neutral">unknown</Badge>}
+                    </Td>
+                    <Td>
                       <div className="flex flex-wrap gap-1">
                         {(u.user_roles ?? []).map((r) => <Badge key={r.role} tone={r.role === "admin" ? "blue" : "neutral"}>{r.role}</Badge>)}
                       </div>
@@ -92,6 +100,14 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                     <Td>{formatDate(u.created_at)}</Td>
                     <Td>
                       <div className="flex flex-wrap gap-2">
+                        {emailVerifiedById.get(u.id) !== null ? (
+                          <form action={verifyUserAndNotify}>
+                            <input type="hidden" name="user_id" value={u.id} />
+                            <ConfirmButton variant="outline" message={emailVerifiedById.get(u.id) ? "Send this user another account verification confirmation email?" : "Mark this user's email as verified and send the confirmation email?"}>
+                              {emailVerifiedById.get(u.id) ? "Resend verified email" : "Verify & email"}
+                            </ConfirmButton>
+                          </form>
+                        ) : null}
                         <form action={setUserSuspended}>
                           <input type="hidden" name="user_id" value={u.id} />
                           <input type="hidden" name="suspended" value={u.is_suspended ? "false" : "true"} />
