@@ -2,6 +2,7 @@ export interface ActionState {
   ok?: boolean;
   error?: string;
   message?: string;
+  whatsappUrl?: string;
   fieldErrors?: Record<string, string[] | undefined>;
 }
 
