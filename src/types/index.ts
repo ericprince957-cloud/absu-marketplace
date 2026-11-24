@@ -90,6 +90,7 @@ export interface Order {
   status: OrderStatus;
   total: number;
   note: string | null;
+  delivery_address: string | null;
   created_at: string;
   order_items?: OrderItem[];
   buyer?: { full_name: string | null } | null;
