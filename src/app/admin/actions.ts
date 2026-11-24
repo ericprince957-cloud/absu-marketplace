@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth";
 import { fail, success, type ActionState } from "@/lib/action-state";
 import { categorySchema, formToObject, moderationSchema, validationFailure } from "@/lib/validation";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getSiteUrl } from "@/lib/site-url";
 
 /**
  * Every action here calls requireAdmin() FIRST. That is a UX/early-exit check;
@@ -76,6 +78,47 @@ export async function grantFreeSlot(formData: FormData): Promise<void> {
   revalidatePath("/admin/users");
   revalidatePath("/admin");
   revalidatePath("/seller");
+}
+
+
+export async function verifyUserAndNotify(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const userId = String(formData.get("user_id") ?? "");
+  if (!UUID.test(userId)) return;
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!apiKey || !from) throw new Error("Email delivery is not configured. Add RESEND_API_KEY and RESEND_FROM_EMAIL in Vercel before verifying users.");
+
+  const admin = createAdminClient();
+  const [{ data: authData, error: authError }, { data: profile, error: profileError }, { data: roleRows }] = await Promise.all([
+    admin.auth.admin.getUserById(userId),
+    admin.from("profiles").select("full_name,email").eq("id", userId).maybeSingle(),
+    admin.from("user_roles").select("role").eq("user_id", userId),
+  ]);
+  if (authError || !authData.user?.email) throw new Error("Could not find this user's authentication account.");
+  if (profileError) throw new Error("Could not load this user's profile.");
+  const email = authData.user.email;
+  const name = profile?.full_name?.trim() || "ABSU Trade member";
+  const roles = (roleRows ?? []).map((row) => row.role);
+  const access = roles.includes("seller") ? "Seller access is enabled on your account." : "Your ABSU Trade account is now verified.";
+  const siteUrl = await getSiteUrl();
+  const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char] ?? char);
+  const { error: updateError } = await admin.auth.admin.updateUserById(userId, { email_confirm: true });
+  if (updateError) throw new Error("The email could not be marked as verified. Please try again.");
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + apiKey, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from, to: [email], subject: "Your ABSU Trade account has been verified",
+      html: '<!doctype html><html><body style="margin:0;background:#f5f5f4;padding:32px 16px;font-family:Arial,sans-serif;color:#171717"><div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #e7e5e4;border-radius:16px;padding:32px"><p style="font-size:13px;font-weight:700;letter-spacing:1px;color:#166044">ABSU TRADE</p><h1 style="font-size:24px">Your account is verified</h1><p>Hello ' + escapeHtml(name) + ',</p><p>Good news! The ABSU Trade team has manually verified your account.</p><p>' + escapeHtml(access) + '</p><p>You can now sign in and continue using ABSU Trade.</p><p style="margin:28px 0"><a href="' + siteUrl + '" style="display:inline-block;background:#166044;color:#fff;text-decoration:none;padding:13px 20px;border-radius:8px;font-weight:700">Visit ABSU Trade</a></p><p style="font-size:12px;color:#78716c">If you have questions, reply to this email or contact ABSU Trade support.</p></div></body></html>',
+    }),
+  });
+  if (!response.ok) {
+    console.error("[admin] verification email failed:", await response.text());
+    throw new Error("The account is verified, but the email could not be sent. Check the email provider settings and use Resend verified email to try again.");
+  }
+  revalidatePath("/admin/users");
 }
 
 export async function createCategory(_prev: ActionState, formData: FormData): Promise<ActionState> {
