@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "ABSU Trade",
   shortName: "ABSU Trade",
   description:
-    "Buy and sell around Abia State University in Uturu. Discover student-listed textbooks, gadgets, fashion, food, hostel essentials and local services on ABSU Trade.",
+    "Buy and sell at Abia State University (ABSU), Uturu. Find student-listed phones, textbooks, fashion, food, hostel essentials and local services.",
   url: "https://www.absutrade.com.ng",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "",
 } as const;
