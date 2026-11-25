@@ -52,7 +52,7 @@ export default async function RequestsPage({ searchParams }: { searchParams: Pro
       <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-4 flex items-center gap-3">
           <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-800"><Search className="size-5" /></span>
-          <div><h2 className="font-bold text-stone-950">Post what you're looking for</h2><p className="text-xs text-stone-500">Requests are visible to the ABSU Trade community.</p></div>
+          <div><h2 className="font-bold text-stone-950">Post what you&apos;re looking for</h2><p className="text-xs text-stone-500">Requests are visible to the ABSU Trade community.</p></div>
         </div>
         {user ? (
           <form action={createItemRequest} className="grid gap-3 sm:grid-cols-2">
