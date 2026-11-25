@@ -160,7 +160,7 @@ export async function listProductComments(productId: string): Promise<ProductCom
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("product_comments")
-    .select("id,product_id,author_id,author_name,body,created_at")
+    .select("id,product_id,author_id,author_name,body,created_at,product_comment_replies(id,comment_id,product_id,seller_id,seller_name,body,created_at)")
     .eq("product_id", productId)
     .order("created_at", { ascending: true })
     .limit(100);
