@@ -5,7 +5,6 @@ import { Alert, StatusBadge } from "@/components/ui/feedback";
 import { Card, PageHeader } from "@/components/ui/card";
 import { getProfile, getRoles, requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { formatDate } from "@/lib/utils";
 import type { SellerApplication } from "@/types";
 
 export const metadata: Metadata = { title: "Become a seller" };
