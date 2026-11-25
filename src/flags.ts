@@ -28,6 +28,7 @@ export const promoBannerCampaign = flag<string>({
     { value: "marketplace-awareness", label: "Marketplace awareness" },
     { value: "seller-recruitment", label: "Seller recruitment" },
     { value: "seasonal-promotion", label: "Seasonal promotion" },
+    { value: "campus-challenge-2026", label: "Campus Challenge — Nov 2026" },
   ],
 });
 
