@@ -5,11 +5,13 @@ import { ProductRow } from "@/components/product/product-grid";
 import { RecentlyViewed } from "@/components/layout/recently-viewed";
 import { StudentListingsSlider } from "@/components/layout/student-listings-slider";
 import { SearchBox } from "@/components/layout/search-box";
+import { CampusChallengeBanner } from "@/components/layout/campus-challenge-banner";
 import { LinkButton } from "@/components/ui/button";
 import { membership } from "@/config/site";
 import { listCategories } from "@/lib/data/categories";
 import { getFreeSlotsRemaining } from "@/lib/data/membership";
 import { listProducts } from "@/lib/data/products";
+import { promoBannerCampaign, promoBannerEnabled } from "@/flags";
 
 const steps = [
   { icon: UserPlus, title: "Create your account", text: "Sign up and verify your email. The first 50 students get free membership for life." },
@@ -31,14 +33,20 @@ function SectionHeading({ id, title, href, cta = "View all" }: { id: string; tit
 }
 
 export default async function HomePage() {
-  const [categories, { products }, slots] = await Promise.all([
+  const [categories, { products }, slots, bannerEnabled, bannerCampaign] = await Promise.all([
     listCategories(),
     listProducts({ pageSize: 10 }),
     getFreeSlotsRemaining(),
+    promoBannerEnabled(),
+    promoBannerCampaign(),
   ]);
+
+  const showCampusChallenge =
+    bannerEnabled && bannerCampaign === "campus-challenge-2026";
 
   return (
     <div className="space-y-9 sm:space-y-14">
+      {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-sage px-5 pb-6 pt-7 sm:px-12 sm:py-16">
         <div aria-hidden className="absolute -right-16 -top-16 size-56 rounded-full bg-brand-200/60 blur-2xl sm:size-80" />
         <div aria-hidden className="absolute -bottom-20 -left-10 size-48 rounded-full bg-gold-400/20 blur-2xl" />
@@ -62,6 +70,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {showCampusChallenge ? <CampusChallengeBanner /> : null}
 
       <section className="max-w-3xl">
         <details className="group rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm sm:px-5">
@@ -124,6 +134,7 @@ export default async function HomePage() {
       <StudentListingsSlider />
       <RecentlyViewed />
 
+      {/* How it works */}
       <section aria-labelledby="how-heading">
         <SectionHeading id="how-heading" title="How it works" />
         <ol className="grid gap-3 md:grid-cols-3 md:gap-4">
