@@ -206,6 +206,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           currentUserId={user?.id ?? null}
           canComment={Boolean(user?.email_confirmed_at)}
           isAdmin={roles.includes("admin")}
+          isSeller={isOwner}
           loginHref={"/login?next=" + encodeURIComponent("/product/" + product.id)}
         />
       ) : null}
