@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, GraduationCap, HandCoins, Search, ShieldCheck, Store, UserPlus } from "lucide-react";
+import { ArrowRight, BadgeCheck, Search, ShieldCheck, Store, UserPlus } from "lucide-react";
 import { CategoryCircles } from "@/components/product/category-nav";
 import { ProductRow } from "@/components/product/product-grid";
 import { RecentlyViewed } from "@/components/layout/recently-viewed";
@@ -10,7 +10,6 @@ import { membership } from "@/config/site";
 import { listCategories } from "@/lib/data/categories";
 import { getFreeSlotsRemaining } from "@/lib/data/membership";
 import { listProducts } from "@/lib/data/products";
-import { formatNaira } from "@/lib/utils";
 
 const steps = [
   { icon: UserPlus, title: "Create your account", text: "Sign up and verify your email. The first 50 students get free membership for life." },
@@ -40,7 +39,6 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-9 sm:space-y-14">
-      {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-sage px-5 pb-6 pt-7 sm:px-12 sm:py-16">
         <div aria-hidden className="absolute -right-16 -top-16 size-56 rounded-full bg-brand-200/60 blur-2xl sm:size-80" />
         <div aria-hidden className="absolute -bottom-20 -left-10 size-48 rounded-full bg-gold-400/20 blur-2xl" />
@@ -73,11 +71,9 @@ export default async function HomePage() {
               <ArrowRight className="size-4 rotate-90" />
             </span>
           </summary>
-          <div className="space-y-4 border-t border-stone-100 pt-4 mt-3">
+          <div className="mt-3 space-y-4 border-t border-stone-100 pt-4">
             <div>
-              <h2 className="text-lg font-semibold text-brand-950 sm:text-xl">
-                A student marketplace for ABSU and Uturu
-              </h2>
+              <h2 className="text-lg font-semibold text-brand-950 sm:text-xl">A student marketplace for ABSU and Uturu</h2>
               <p className="mt-2 text-sm leading-7 text-stone-600 sm:text-base">
                 ABSU Trade connects buyers with students and local sellers around Abia State University, Uturu.
                 Browse available products and services, compare listing details, and contact sellers directly.
@@ -103,7 +99,6 @@ export default async function HomePage() {
         </details>
       </section>
 
-      {/* Categories */}
       {categories.length > 0 ? (
         <section aria-labelledby="cat-heading">
           <SectionHeading id="cat-heading" title="Shop by category" />
@@ -111,7 +106,6 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Latest */}
       <section aria-labelledby="latest-heading">
         <SectionHeading id="latest-heading" title="Fresh on campus" href="/marketplace" />
         {products.length > 0 ? (
@@ -128,34 +122,8 @@ export default async function HomePage() {
       </section>
 
       <StudentListingsSlider />
-
       <RecentlyViewed />
 
-      {/* Promo cards: only real destinations and real numbers */}
-      <section aria-label="Highlights" className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-        <Link href="/seller/apply" className="group relative overflow-hidden rounded-3xl bg-brand-900 p-6 text-white transition active:scale-[0.99] sm:p-8">
-          <div aria-hidden className="absolute -right-8 -top-8 size-36 rounded-full bg-brand-700/50" />
-          <GraduationCap className="relative size-8 text-gold-400" aria-hidden />
-          <h3 className="relative mt-3 text-2xl font-semibold text-white">Got something to sell?</h3>
-          <p className="relative mt-1 max-w-xs text-sm text-brand-100">List it in minutes and reach students on campus.</p>
-          <span className="relative mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-gold-400 px-5 text-sm font-semibold text-brand-950">
-            Start selling <ArrowRight className="size-4" aria-hidden />
-          </span>
-        </Link>
-        <Link href="/pricing" className="group relative overflow-hidden rounded-3xl bg-gold-400/25 p-6 transition active:scale-[0.99] sm:p-8">
-          <div aria-hidden className="absolute -right-8 -top-8 size-36 rounded-full bg-gold-400/40" />
-          <HandCoins className="relative size-8 text-brand-900" aria-hidden />
-          <h3 className="relative mt-3 text-2xl font-semibold text-brand-950">Free for the first {membership.freeSlotLimit}</h3>
-          <p className="relative mt-1 max-w-xs text-sm text-stone-700">
-            Then {formatNaira(membership.priceNaira)} a month. Browsing is always free.
-          </p>
-          <span className="relative mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-brand-900 px-5 text-sm font-semibold text-white">
-            See pricing <ArrowRight className="size-4" aria-hidden />
-          </span>
-        </Link>
-      </section>
-
-      {/* How it works */}
       <section aria-labelledby="how-heading">
         <SectionHeading id="how-heading" title="How it works" />
         <ol className="grid gap-3 md:grid-cols-3 md:gap-4">
