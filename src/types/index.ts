@@ -191,6 +191,16 @@ export interface AdminStats {
 }
 
 
+export interface ProductCommentReply {
+  id: string;
+  comment_id: string;
+  product_id: string;
+  seller_id: string;
+  seller_name: string;
+  body: string;
+  created_at: string;
+}
+
 export interface ProductComment {
   id: string;
   product_id: string;
@@ -198,4 +208,5 @@ export interface ProductComment {
   author_name: string;
   body: string;
   created_at: string;
+  replies?: ProductCommentReply[];
 }
