@@ -187,6 +187,55 @@ export async function addProductComment(_prev: ActionState, formData: FormData):
   return success("Your comment has been posted.");
 }
 
+/** Only the owner of the listing can respond once beneath a buyer's comment. */
+export async function addProductCommentReply(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const user = await getUser();
+  if (!user) return fail("Please log in to respond.");
+  if (!user.email_confirmed_at) return fail("Verify your email before responding.");
+
+  const commentId = String(formData.get("comment_id") ?? "").trim();
+  const productId = String(formData.get("product_id") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+  if (!/^[0-9a-f-]{36}$/i.test(commentId) || !/^[0-9a-f-]{36}$/i.test(productId)) {
+    return fail("This comment could not be found.");
+  }
+  if (body.length < 1 || body.length > 1000) {
+    return fail("Replies must be between 1 and 1,000 characters.");
+  }
+
+  const supabase = await createClient();
+  const { data: product } = await supabase
+    .from("products")
+    .select("seller_id,status")
+    .eq("id", productId)
+    .maybeSingle();
+
+  if (!product || product.seller_id !== user.id || product.status !== "approved") {
+    return fail("Only the seller who owns this approved listing can respond.");
+  }
+
+  const { error } = await supabase.from("product_comment_replies").insert({
+    comment_id: commentId,
+    product_id: productId,
+    seller_id: user.id,
+    body,
+  });
+
+  if (error) {
+    if (error.message.includes("email_verification_required")) return fail("Verify your email before responding.");
+    if (error.message.includes("seller_not_product_owner") || error.code === "42501") {
+      return fail("Only the seller who owns this listing can respond.");
+    }
+    if (error.code === "23505") return fail("You have already responded to this comment.");
+    if (error.message.includes("account_suspended")) return fail("This account is currently restricted.");
+    console.error("[actions] addProductCommentReply failed:", error.message);
+    return fail("We could not post your response. Please try again.");
+  }
+
+  revalidatePath("/product/" + productId);
+  return success("Your response has been posted.");
+}
+
 /** Authors can remove their own comments; admins can remove comments for moderation. */
 export async function deleteProductComment(formData: FormData): Promise<void> {
   const user = await getUser();
