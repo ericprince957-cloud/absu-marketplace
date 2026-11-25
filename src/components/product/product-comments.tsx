@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Trash2 } from "lucide-react";
-import { addProductComment, deleteProductComment } from "@/app/(site)/actions";
+import { addProductComment, addProductCommentReply, deleteProductComment } from "@/app/(site)/actions";
 import { FormMessage } from "@/components/ui/form-message";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { TextAreaField } from "@/components/ui/field";
@@ -19,6 +19,7 @@ type Props = {
   currentUserId: string | null;
   canComment: boolean;
   isAdmin: boolean;
+  isSeller: boolean;
   loginHref: string;
 };
 
@@ -28,11 +29,17 @@ export function ProductComments({
   currentUserId,
   canComment,
   isAdmin,
+  isSeller,
   loginHref,
 }: Props) {
   const router = useRouter();
   const [state, action] = useActionState(async (previous: typeof initialState, formData: FormData) => {
     const result = await addProductComment(previous, formData);
+    if (result.ok) router.refresh();
+    return result;
+  }, initialState);
+  const [replyState, replyAction] = useActionState(async (previous: typeof initialState, formData: FormData) => {
+    const result = await addProductCommentReply(previous, formData);
     if (result.ok) router.refresh();
     return result;
   }, initialState);
@@ -79,6 +86,37 @@ export function ProductComments({
                   ) : null}
                 </div>
                 <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-stone-700">{comment.body}</p>
+                {comment.replies?.[0] ? (
+                  <div className="ml-3 mt-3 rounded-xl border-l-2 border-brand-600 bg-brand-50/70 px-3 py-3 sm:ml-5">
+                    <p className="text-xs font-bold text-brand-900">
+                      {comment.replies[0].seller_name}
+                      <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-800">Seller</span>
+                    </p>
+                    <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-stone-700">{comment.replies[0].body}</p>
+                    <time className="mt-1 block text-[10px] text-stone-500" dateTime={comment.replies[0].created_at}>
+                      {formatDate(comment.replies[0].created_at)}
+                    </time>
+                  </div>
+                ) : isSeller ? (
+                  <form action={replyAction} className="ml-3 mt-3 space-y-2 border-l-2 border-stone-200 pl-3 sm:ml-5">
+                    <input type="hidden" name="comment_id" value={comment.id} />
+                    <input type="hidden" name="product_id" value={productId} />
+                    <label htmlFor={`reply-${comment.id}`} className="block text-xs font-semibold text-brand-900">Reply as the seller</label>
+                    <textarea
+                      id={`reply-${comment.id}`}
+                      name="body"
+                      rows={2}
+                      maxLength={1000}
+                      required
+                      placeholder="Answer the buyer's question..."
+                      className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-100"
+                    />
+                    <FormMessage state={replyState} />
+                    <div className="flex justify-end">
+                      <SubmitButton size="sm" pendingText="Sending...">Reply</SubmitButton>
+                    </div>
+                  </form>
+                ) : null}
               </li>
             ))}
           </ul>
