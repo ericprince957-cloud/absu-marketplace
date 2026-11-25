@@ -71,7 +71,7 @@ export async function Listing({
   const { query, values } = parseListingParams(searchParams);
   if (lockedCategoryId) query.categoryId = lockedCategoryId;
 
-  const [categories, { products, total }] = await Promise.all([listCategories(), listProducts(query)]);
+  const [categories, { products }] = await Promise.all([listCategories(), listProducts(query)]);
   const hasFilters = Boolean(values.q || values.category || values.min || values.max || values.condition || values.campus_area || values.hostel_name || values.academic_department || values.academic_level || values.course_code);
 
   return (

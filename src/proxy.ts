@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
 
 function buildContentSecurityPolicy(nonce: string) {
@@ -22,7 +22,19 @@ function buildContentSecurityPolicy(nonce: string) {
   return directives.join("; ");
 }
 
+// Some links and crawlers append a stray backslash (e.g. "/about\"). Left alone, these
+// crash the server with "Cannot find module ./.next/server/pages/about%5C.js".
+// Redirect them to the clean path instead.
+const TRAILING_BACKSLASH = /(?:\\|%5c)+$/i;
+
 export async function proxy(request: NextRequest) {
+  const rawPath = request.nextUrl.pathname;
+  if (TRAILING_BACKSLASH.test(rawPath)) {
+    const cleanUrl = request.nextUrl.clone();
+    cleanUrl.pathname = rawPath.replace(TRAILING_BACKSLASH, "") || "/";
+    return NextResponse.redirect(cleanUrl, 308);
+  }
+
   const nonce = btoa(crypto.randomUUID());
   const contentSecurityPolicy = buildContentSecurityPolicy(nonce);
 
